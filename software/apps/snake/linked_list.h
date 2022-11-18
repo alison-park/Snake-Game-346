@@ -31,6 +31,8 @@ void list_insert(node_t* node);
 //  be NULL if the list is empty.
 node_t* list_get_first();
 
+node_t* list_remove_last();
+
 
 // Remove the specified node from the linked list. Note that the memory for the
 //  node is NOT automatically freed.

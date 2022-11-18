@@ -39,6 +39,21 @@ node_t* list_get_first() {
 }
 
 
+// remove last node in list
+node_t* list_remove_last(){
+  if (linked_list != NULL) {
+    node_t* prev_node = linked_list;
+    node_t* curr_node = linked_list->next;
+    while(curr_node != NULL){
+      prev_node = curr_node;
+      curr_node = curr_node->next;
+    }
+
+    prev_node->next = NULL;
+    return curr_node;
+  }
+}
+
 // remove an arbitrary node if in list
 void list_remove(node_t* node) {
     // fault if given a NULL node
