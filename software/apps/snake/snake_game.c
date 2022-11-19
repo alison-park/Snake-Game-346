@@ -1,6 +1,6 @@
 #include <stdlib.h>
-#include <conio.h>
-#include <stdio.h>i
+//#include <conio.h>
+#include <stdio.h>
 #include <linked_list.h>
 
 int i,j,height = 16, width = 32, score;
