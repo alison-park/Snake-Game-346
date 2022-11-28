@@ -10,7 +10,7 @@
 #include "nrf.h"
 #include "nrf_delay.h"
 
-#include "virtual_timer_linked_list.h"
+#include "linked_list.h"
 
 // the linked list
 static node_t* linked_list = NULL;
@@ -27,7 +27,7 @@ void list_insert(node_t* node) {
     }
     else{
    	node_t* first = list_get_first();
-    	node.next=first;
+    	node->next=first;
     	linked_list=node;  
     }
 }
@@ -52,6 +52,7 @@ node_t* list_remove_last(){
     prev_node->next = NULL;
     return curr_node;
   }
+  return NULL;
 }
 
 // remove an arbitrary node if in list
@@ -72,7 +73,7 @@ void list_remove(node_t* node) {
             linked_list = linked_list->next;
         } else {
             // it was not the head
-            node_t* prev_niode = linked_list;
+            node_t* prev_node = linked_list;
             node_t* curr_node = linked_list->next;
             while (curr_node != NULL && curr_node != node) {
                 // iterate list until the end or the node we want
@@ -96,12 +97,12 @@ void list_print() {
     } else {
 
         // print first node
-        printf("[ (%lu)", linked_list->timer_value);
+        printf("[ (%d, %d)", linked_list->x, linked_list->y);
 
         // print the other nodes
         node_t* curr_node = linked_list->next;
         while (curr_node != NULL) {
-            printf(" -> (%lu)", curr_node->timer_value);
+            printf(" -> (%d, %d)", linked_list->x, linked_list->y);
             curr_node = curr_node->next;
         }
         printf(" ]\n");

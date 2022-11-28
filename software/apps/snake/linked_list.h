@@ -5,8 +5,6 @@
 
 #include "nrf.h"
 
-#include "virtual_timer.h"
-
 // -- List types
 
 // a node within a linked list
