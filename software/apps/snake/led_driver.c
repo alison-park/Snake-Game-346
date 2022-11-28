@@ -19,8 +19,8 @@ static const nrfx_pwm_t PWM_INST = NRFX_PWM_INSTANCE(0);
 
 
 // Holds a pre-computed sine wave
-#define BUFFER_SIZE 256;
-uint32_t led_buffer[BUFFER_SIZE] = {0};
+int BUFFER_SIZE = 256;
+uint32_t led_buffer[256] = {0};
 
 // Holds duty cycle values to trigger PWM toggle
 nrf_pwm_values_common_t sequence_data[1] = {0};
@@ -61,12 +61,13 @@ static void display_array(int arr[32][8]) {
       if (arr[i][j] == 1) {
 	led_buffer[i*8 + j] = SNAKE;
       }
-      else if (arr[i] == 2) {
+      else if (arr[i][j] == 2) {
 	led_buffer[i*8 + j] = FRUIT;
       }
       else {
 	led_buffer[i*8 + j] = BLANK;
       }
+    }
   }
 				      
 
@@ -74,12 +75,11 @@ static void display_array(int arr[32][8]) {
   // Do not make another buffer for this. You can reuse the sample buffer
   // You should set a non-zero repeat value (this is how many times each _sample_ repeats)
   // TODO
-  nrf_pwm_sequence_t pwm_sequence = {
-  .values.p_common = led_buffer,
-  .length = BUFFER_SIZE,
-  .repeats = 1,
-  .end_delay = 0,
-};
+    pwm_sequence.values.p_common = led_buffer;
+    
+    pwm_sequence.length = BUFFER_SIZE;
+    pwm_sequence.repeats = 1;
+    pwm_sequence.end_delay = 0;
 
   // Start playback of the samples
   // You will need to pass in a flag to loop the sound
