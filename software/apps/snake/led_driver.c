@@ -20,7 +20,8 @@ static const nrfx_pwm_t PWM_INST = NRFX_PWM_INSTANCE(0);
 
 // Holds a pre-computed sine wave
 int BUFFER_SIZE = 256;
-uint32_t led_buffer[256] = {0};
+uint32_t color_buffer[256] = {0};
+uint16_t sample_array[6184] ={0}; //256*24+40 = 6184
 
 // Holds duty cycle values to trigger PWM toggle
 nrf_pwm_values_common_t sequence_data[1] = {0};
@@ -35,6 +36,7 @@ nrf_pwm_sequence_t pwm_sequence = {
 
 
 
+
 static void pwm_init(void) {
   // Initialize the PWM
   // SPEAKER_OUT is the output pin, mark the others as NRFX_PWM_PIN_NOT_USED
@@ -44,7 +46,7 @@ static void pwm_init(void) {
   nrfx_pwm_config_t cnfg = {
 			    .output_pins = {EDGE_P13, NRFX_PWM_PIN_NOT_USED, NRFX_PWM_PIN_NOT_USED, NRFX_PWM_PIN_NOT_USED},
 			    .irq_priority = 1,
-			    .base_clock = NRF_PWM_CLK_8MHz,
+			    .base_clock = NRF_PWM_CLK_16MHz,
 			    .count_mode = NRF_PWM_MODE_UP,
 			    .top_value = 20,
 			    .load_mode = NRF_PWM_LOAD_COMMON,
@@ -59,26 +61,41 @@ static void display_array(int arr[32][8]) {
   for (int i = 0; i < 32; i++) {
     for (int j=0; j < 8; j++) {
       if (arr[i][j] == 1) {
-	led_buffer[i*8 + j] = SNAKE;
+	color_buffer[i*8 + j] = SNAKE;
       }
       else if (arr[i][j] == 2) {
-	led_buffer[i*8 + j] = FRUIT;
+	color_buffer[i*8 + j] = FRUIT;
       }
       else {
-	led_buffer[i*8 + j] = BLANK;
+	color_buffer[i*8 + j] = BLANK;
       }
     }
   }
-				      
+
+  for (int ii=0; ii<256; ii++){
+    uint32_t curr_color = color_buffer[ii];
+    for(int jj=0; jj<24; jj++){
+      // process bit jj of curr_color into the sample array
+      uint32_t color_bit=(curr_color>>jj)&1;
+      if(color_bit==0){
+	//set to low bit
+	sample_array[ii*24 + jj]= (1<<15) | 6; //0.4 * 20 / 1.25 = 6.4
+      }
+      else{
+	//set bit
+	sample_array[ii*24 + jj]= (1<<15) | 14; //0.85 * 20 / 1.25 = 13.6     	
+      }  
+    } 
+  }
 
   // Create the pwm sequence (nrf_pwm_sequence_t) using the samples
   // Do not make another buffer for this. You can reuse the sample buffer
   // You should set a non-zero repeat value (this is how many times each _sample_ repeats)
   // TODO
-    pwm_sequence.values.p_common = led_buffer;
+  pwm_sequence.values.p_common = sample_array;
     
     pwm_sequence.length = BUFFER_SIZE;
-    pwm_sequence.repeats = 1;
+    pwm_sequence.repeats = 0;
     pwm_sequence.end_delay = 0;
 
   // Start playback of the samples
