@@ -2,12 +2,12 @@
 #include <stdint.h>
 #include <stdio.h>
 
-#include "nrf.h"
 #include "nrf_delay.h"
 #include "nrfx_saadc.h"
 #include "nrfx_pwm.h"
 
 #include "microbit_v2.h"
+#include "led_driver.h"
 
 // PWM configuration
 static const nrfx_pwm_t PWM_INST = NRFX_PWM_INSTANCE(0);
@@ -39,7 +39,7 @@ nrf_pwm_sequence_t pwm_sequence = {
 
 static void pwm_init(void) {
   // Initialize the PWM
-  // SPEAKER_OUT is the output pin, mark the others as NRFX_PWM_PIN_NOT_USED
+  // EDGEZ_P13 is the output pin, mark the others as NRFX_PWM_PIN_NOT_USED
   // Set the clock to 500 kHz, count mode to Up, and load mode to Common
   // The Countertop value doesn't matter for now. We'll set it in play_tone()
   // TODO
@@ -104,4 +104,23 @@ static void display_array(int arr[32][8]) {
   //    (which doesn't matter if you set the loop flag)
   // TODO
   nrfx_pwm_simple_playback(&PWM_INST, &pwm_sequence, 2, NRFX_PWM_FLAG_LOOP);
+}
+
+
+static void timer_init(void){
+  //set to 32 bit timer
+  NRF_TIMER4->BITMODE=3;
+
+  //set to 16 MHz clock
+  NRF_TIMER4->PRESCALER=0;
+
+  //enable interrupts
+  NRF_TIMER4->CC[0]=0;
+  NRF_TIMER4->INTENSET=1<<TIMER_INTENSET_COMPARE0_Pos;
+
+  //enable interrupts in the NVIC
+  NVIC_ClearPendingIRQ(TIMER4_IRQn);
+  NVIC_SetPriority(TIMER4_IRQn,7);
+  NVIC_EnableIRQ(TIMER4_IRQn);
+
 }
