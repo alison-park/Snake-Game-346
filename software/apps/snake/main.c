@@ -4,6 +4,7 @@
 
 #include "nrf_delay.h"
 #include "microbit_v2.h"
+#include "nrf_twi_mngr.h"
 
 #include "imu_driver.h"
 #include "led_driver.h"
@@ -11,6 +12,8 @@
 
 #define LED_ONE EDGE_P13
 #define LED_TWO EDGE_P14
+
+NRF_TWI_MNGR_DEF(twi_mngr_instance, 1, 0);
 
 int main(void) {
   printf("Board started!\n");
@@ -32,10 +35,13 @@ int main(void) {
   
   //display array
   
-  int grid[32][8] = {{1}}; //all green
+  //int grid[32*8] = {1}; //all green
   
-  display_array(grid); //grab board grid from snake_game.c
+  //display_array(grid); //grab board grid from snake_game.c
   
+  
+  init_imu(&twi_mngr_instance);
+  printf("%x\n", &twi_mngr_instance);
   
   
   // loop forever

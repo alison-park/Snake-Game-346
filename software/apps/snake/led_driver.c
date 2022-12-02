@@ -13,7 +13,7 @@
 static const nrfx_pwm_t PWM_INST = NRFX_PWM_INSTANCE(0);
 
 // LED color constants
-#define SNAKE 0xFF0000;
+uint32_t SNAKE = 0xFF0000;
 #define FRUIT 0x00FF00;
 #define BLANK 0x000000;
 
@@ -21,7 +21,7 @@ static const nrfx_pwm_t PWM_INST = NRFX_PWM_INSTANCE(0);
 // Holds a pre-computed sine wave
 int BUFFER_SIZE = 256;
 uint32_t color_buffer[256] = {0};
-uint16_t sample_array[6184] ={0}; //256*24+40 = 6184
+uint16_t sample_array[6204] ={0}; //256*24+40 = 6184
 
 // Holds duty cycle values to trigger PWM toggle
 nrf_pwm_values_common_t sequence_data[1] = {0};
@@ -37,7 +37,7 @@ nrf_pwm_sequence_t pwm_sequence = {
 
 
 
-static void pwm_init(void) {
+void pwm_init(void) {
   // Initialize the PWM
   // EDGEZ_P13 is the output pin, mark the others as NRFX_PWM_PIN_NOT_USED
   // Set the clock to 500 kHz, count mode to Up, and load mode to Common
@@ -46,29 +46,30 @@ static void pwm_init(void) {
   nrfx_pwm_config_t cnfg = {
 			    .output_pins = {EDGE_P13, NRFX_PWM_PIN_NOT_USED, NRFX_PWM_PIN_NOT_USED, NRFX_PWM_PIN_NOT_USED},
 			    .irq_priority = 1,
-			    .base_clock = NRF_PWM_CLK_16MHz,
+			    .base_clock = NRF_PWM_CLK_8MHz,
 			    .count_mode = NRF_PWM_MODE_UP,
-			    .top_value = 20,
+			    .top_value = 10,
 			    .load_mode = NRF_PWM_LOAD_COMMON,
 			    .step_mode = NRF_PWM_STEP_AUTO
   };
   nrfx_pwm_init(&PWM_INST, &cnfg, NULL);
 }
 
-static void display_array(int arr[32][8]) {
-  nrfx_pwm_stop(&PWM_INST, true);
-
+void display_array(int* arr) {
+  
   for (int i = 0; i < 32; i++) {
     for (int j=0; j < 8; j++) {
-      if (arr[i][j] == 1) {
+      //printf("%d",arr[i*8+j]);
+      if (arr[i*8 + j] == 1) {
 	color_buffer[i*8 + j] = SNAKE;
       }
-      else if (arr[i][j] == 2) {
+      else if (arr[i*8 + j] == 2) {
 	color_buffer[i*8 + j] = FRUIT;
       }
       else {
 	color_buffer[i*8 + j] = BLANK;
       }
+      //printf("%d\n",color_buffer[i*8+j]);
     }
   }
 
@@ -77,14 +78,18 @@ static void display_array(int arr[32][8]) {
     for(int jj=0; jj<24; jj++){
       // process bit jj of curr_color into the sample array
       uint32_t color_bit=(curr_color>>jj)&1;
+      
       if(color_bit==0){
 	//set to low bit
-	sample_array[ii*24 + jj]= (1<<15) | 6; //0.4 * 20 / 1.25 = 6.4
+	sample_array[ii*24 + jj]= (1<<15) | 3; //0.4 * 20 / 1.25 = 6.4
       }
       else{
 	//set bit
-	sample_array[ii*24 + jj]= (1<<15) | 14; //0.85 * 20 / 1.25 = 13.6     	
+	sample_array[ii*24 + jj]= (1<<15) | 7; //0.85 * 20 / 1.25 = 13.6     	
       }  
+      if(ii == 0){
+      	printf("%x\n", sample_array[ii*24+jj]);
+      }
     } 
   }
 
@@ -94,7 +99,7 @@ static void display_array(int arr[32][8]) {
   // TODO
   pwm_sequence.values.p_common = sample_array;
     
-    pwm_sequence.length = BUFFER_SIZE;
+    pwm_sequence.length = 6204;
     pwm_sequence.repeats = 0;
     pwm_sequence.end_delay = 0;
 
@@ -103,11 +108,11 @@ static void display_array(int arr[32][8]) {
   // The playback count here is the number of times the entire buffer will repeat
   //    (which doesn't matter if you set the loop flag)
   // TODO
-  nrfx_pwm_simple_playback(&PWM_INST, &pwm_sequence, 2, NRFX_PWM_FLAG_LOOP);
+  nrfx_pwm_simple_playback(&PWM_INST, &pwm_sequence, 1, 0);
 }
 
 
-static void timer_init(void){
+void timer_init(void){
   //set to 32 bit timer
   NRF_TIMER4->BITMODE=3;
 

@@ -5,8 +5,8 @@
 
 #include "nrf.h"
 
-static void pwm_init(void);
+void pwm_init(void);
 
-static void display_array(int arr[32][8]);
+void display_array(int* arr);
 
-static void timer_init(void);
+void timer_init(void);
