@@ -40,12 +40,15 @@ int main(void) {
   display_array(grid); //grab board grid from snake_game.c
   
   
-  init_imu(&twi_mngr_instance);
+  //init_imu(&twi_mngr_instance);
   
-  
+  int i = 0;
   // loop forever
   while (1) {
-    nrf_delay_ms(1000);
+    nrf_delay_ms(2000);
+    grid[0] = i;
+    i += 1;
+    if(i == 3){ i= 0;}
     display_array(grid);
     printf("Maybe displaying");
   }

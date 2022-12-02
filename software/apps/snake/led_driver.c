@@ -13,7 +13,7 @@
 static const nrfx_pwm_t PWM_INST = NRFX_PWM_INSTANCE(0);
 
 // LED color constants
-uint32_t SNAKE = 0x330000;
+uint32_t SNAKE = 0x0000FF;
 #define FRUIT 0x00FF00;
 #define BLANK 0x000000;
 
@@ -21,7 +21,7 @@ uint32_t SNAKE = 0x330000;
 // Holds a pre-computed sine wave
 int BUFFER_SIZE = 256;
 uint32_t color_buffer[256] = {0};
-uint16_t sample_array[48] ={0}; //256*24+40 = 6184
+uint16_t sample_array[6168] ={0}; //256*24+24 = 6184
 
 
 
@@ -36,13 +36,14 @@ void pwm_init(void) {
   nrfx_pwm_config_t cnfg = {
 			    .output_pins = {EDGE_P13, NRFX_PWM_PIN_NOT_USED, NRFX_PWM_PIN_NOT_USED, NRFX_PWM_PIN_NOT_USED},
 			    .irq_priority = 1,
-			    .base_clock = NRF_PWM_CLK_16MHz,
+			    .base_clock = NRF_PWM_CLK_8MHz,
 			    .count_mode = NRF_PWM_MODE_UP,
 			    .top_value = 20,
 			    .load_mode = NRF_PWM_LOAD_COMMON,
 			    .step_mode = NRF_PWM_STEP_AUTO
   };
   nrfx_pwm_init(&PWM_INST, &cnfg, NULL);
+
 }
 
 void display_array(int* arr) {
@@ -59,34 +60,28 @@ void display_array(int* arr) {
       else {
 	color_buffer[i*8 + j] = BLANK;
       }
-      //printf("%d\n",color_buffer[i*8+j]);
     }
   }
+  printf("%x\n", color_buffer[0]);
 
   //printf("The non zero colors are:");
 
   for (int ii=0; ii<256; ii++){
     uint32_t curr_color = color_buffer[ii];
-    if(ii == 0){
-      for(int jj=0; jj<24; jj++){
-	// process bit jj of curr_color into the sample array
-	uint32_t color_bit=(curr_color>>jj)&1;
-      
-	if(color_bit==0){
-	  //set to low bit
-	  sample_array[ii*24 + jj]= (1<<15) | 0; //0.4 * 20 / 1.25 = 6.4
-	}
-	else{
-	  //set bit
-	  sample_array[ii*24 + jj]= (1<<15) | 14; //0.85 * 20 / 1.25 = 13.6     	
-	}  
-	if(sample_array[ii*24 + jj] != ((1<<15) | 3)){
-	  //printf("%x\n", sample_array[ii*24+jj]);
-	}
+    for(int jj=0; jj<24; jj++){
+      // process bit jj of curr_color into the sample array
+      uint32_t color_bit=(curr_color>>jj)&1;
+     
+      if(color_bit==0){
+        //set to low bit
+        sample_array[(ii+1)*24 + jj]= (1<<15) | 3; //0.4 * 20 / 1.25 = 6.4
+      }
+      else{
+        //set bit
+        sample_array[(ii+1)*24 + jj]= (1<<15) | 7; //0.85 * 20 / 1.25 = 13.6     	
       }
     }
   }
-
   //x8003
   //x8003
   //x8007
@@ -97,7 +92,7 @@ void display_array(int* arr) {
   // Sequence structure for configuring DMA
   nrf_pwm_sequence_t pwm_sequence = {
     .values.p_common = sample_array,
-    .length = 48,
+    .length = 6168,
     .repeats = 0,
     .end_delay = 0,
   };
@@ -107,7 +102,7 @@ void display_array(int* arr) {
   // The playback count here is the number of times the entire buffer will repeat
   //    (which doesn't matter if you set the loop flag)
   // TODO
-  nrfx_pwm_simple_playback(&PWM_INST, &pwm_sequence, 1, 0);
+  nrfx_pwm_simple_playback(&PWM_INST, &pwm_sequence, 1, NRFX_PWM_FLAG_STOP);
 }
 
 
