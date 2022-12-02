@@ -70,9 +70,9 @@ imu_measurement_t read_tilt(){
 
   
   // then return the results
-  result.x = (final_x * 0.061)/1000));
-  result.y = (final_y * 0.061)/1000));
-  result.z = (final_z * 0.061)/1000));
+  result.x = (final_x * 0.061)/1000;
+  result.y = (final_y * 0.061)/1000;
+  result.z = (final_z * 0.061)/1000;
   //
   return result;
 }
