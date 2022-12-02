@@ -51,7 +51,7 @@ int main(void) {
     if(i == 3){ i= 0;}
     display_array(grid);
     //printf("Maybe displaying");
-    result = read_tilt();
+    imu_measurement_t result = read_tilt();
     printf('accelermoter: %x %x %x/n 'result.x, result.y, result.z);
   }
 }
