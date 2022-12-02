@@ -40,7 +40,7 @@ int main(void) {
   display_array(grid); //grab board grid from snake_game.c
   
   
-  //init_imu(&twi_mngr_instance);
+  init_imu(&twi_mngr_instance);
   
   int i = 0;
   // loop forever
@@ -52,6 +52,6 @@ int main(void) {
     display_array(grid);
     //printf("Maybe displaying");
     imu_measurement_t result = read_tilt();
-    printf('accelermoter: %f %f %f/n ', result.x, result.y, result.z);
+    printf("hello %f \t %f \t %f \n", result.x, result.y, result.z);
   }
 }
