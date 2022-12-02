@@ -4,9 +4,9 @@
 #include "nrf_twi_mngr.h"
 
 typedef struct {
-  float x,
-  float y,
-  float z
+  float x;
+  float y;
+  float z;
 } imu_measurement_t;
 
 void init_imu(const nrf_twi_mngr_t* i2c);

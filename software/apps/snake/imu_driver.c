@@ -8,7 +8,7 @@ static const nrf_twi_mngr_t* i2c_manager = NULL;
 
 void init_imu(const nrf_twi_mngr_t* i2c) {
   i2c_manager = i2c;
-  printf("%x\n", i2c);
+  //printf("%x\n", i2c);
   
   nrf_drv_twi_config_t i2c_config = NRF_DRV_TWI_DEFAULT_CONFIG;
   i2c_config.scl = EDGE_P19;
@@ -19,18 +19,21 @@ void init_imu(const nrf_twi_mngr_t* i2c) {
 
   // Read WHO AM I register
   //should be OxEA
-  uint8_t result = i2c_reg_read(0x68, 0x00);
+  uint8_t result = i2c_reg_read(0x6B, 0x0F);
   printf("Please be correct : %x\n", result);
   
  }
 
 uint8_t i2c_reg_read(uint8_t i2c_addr, uint8_t reg_addr){
   uint8_t rx_buf = 0;
-  printf("%x\n", i2c_manager);
+  //printf("%x\n", i2c_manager);
   nrf_twi_mngr_transfer_t const read_transfer[] = {
-    NRF_TWI_MNGR_READ(i2c_addr, &rx_buf, 2, 0)
+    NRF_TWI_MNGR_WRITE(i2c_addr, &reg_addr, 1, NRF_TWI_MNGR_NO_STOP),
+    NRF_TWI_MNGR_READ(i2c_addr, &rx_buf, 1, 0)
   };
-  nrf_twi_mngr_perform(i2c_manager, NULL, read_transfer, 1, NULL);
+  uint32_t res = nrf_twi_mngr_perform(i2c_manager, NULL, read_transfer, 2, NULL);
+
+  printf("Error code %d\n", res);
 
   return rx_buf;
 }   
