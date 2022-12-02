@@ -42,8 +42,8 @@ uint8_t i2c_reg_read(uint8_t i2c_addr, uint8_t reg_addr){
   return rx_buf;
 }   
 
-void i2c_reg_write(uint8_t i2c_addr, uint8_t reg_addr){
-  uint8_t write_data[2] = { reg_addr, 0 }; 
+void i2c_reg_write(uint8_t i2c_addr, uint8_t reg_addr, uint8_t data){
+  uint8_t write_data[] = { reg_addr, data }; 
   nrf_twi_mngr_transfer_t write_transfer[] = {
     NRF_TWI_MNGR_WRITE(i2c_addr, &write_data, 2, 0)
   };
