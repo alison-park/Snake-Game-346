@@ -50,6 +50,8 @@ int main(void) {
     i += 1;
     if(i == 3){ i= 0;}
     display_array(grid);
-    printf("Maybe displaying");
+    //printf("Maybe displaying");
+    result = read_tilt();
+    printf('accelermoter: %x %x %x/n 'result.x, result.y, result.z);
   }
 }
