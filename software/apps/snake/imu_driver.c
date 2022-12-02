@@ -56,21 +56,27 @@ imu_measurement_t read_tilt(uint8_t i2c_addr){
   float result_x = (float) ( concat_x >> 6 );
   
   // y axis measurements
-  int16_t x_axis_l = i2c_reg_read(i2c_addr, 46);
-  int16_t x_axis_h = i2c_reg_read(i2c_addr, 45);
+  int16_t y_axis_l = i2c_reg_read(i2c_addr, 48);
+  int16_t y_axis_h = i2c_reg_read(i2c_addr, 47);
 
-  x_axis_h = x_axis_h <<8;
-  int16_t concat_x = x_axis_h + x_axis_l;
-  float result_x = (float) ( concat_x >> 6 );
+  y_axis_h = y_axis_h <<8;
+  int16_t concat_y = y_axis_h + y_axis_l;
+  float result_y = (float) ( concat_y >> 6 );
   
   // z axis measurements
-  int16_t x_axis_l = i2c_reg_read(i2c_addr, 46);
-  int16_t x_axis_h = i2c_reg_read(i2c_addr, 45);
+  int16_t z_axis_l = i2c_reg_read(i2c_addr, 50);
+  int16_t z_axis_h = i2c_reg_read(i2c_addr, 49);
 
-  x_axis_h = x_axis_h <<8;
-  int16_t concat_x = x_axis_h + x_axis_l;
-  float result_x = (float) ( concat_x >> 6 );
+  z_axis_h = z_axis_h <<8;
+  int16_t concat_z = z_axis_h + z_axis_l;
+  float result_z = (float) ( concat_z >> 6 );
   
+  // do the conversion here
   
-
+  // then return the results
+  result.x = result_x;
+  result.y = result_y;
+  result.z = result_z;
+  
+  return result;
 }
