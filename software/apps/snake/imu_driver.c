@@ -15,11 +15,12 @@ void init_imu(const nrf_twi_mngr_t* i2c) {
   i2c_config.sda = EDGE_P20;
   i2c_config.frequency = NRF_TWIM_FREQ_100K;
   i2c_config.interrupt_priority = 0;
+
   nrf_twi_mngr_init(i2c, &i2c_config);
 
   // Read WHO AM I register
-  //should be OxEA
   uint8_t result = i2c_reg_read(0x6B, 0x0F);
+  //should be Ox6C
   printf("Please be correct : %x\n", result);
   
  }

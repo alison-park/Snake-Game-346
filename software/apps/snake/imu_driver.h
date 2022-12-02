@@ -3,6 +3,9 @@
 #include <stddef.h>
 #include "nrf_twi_mngr.h"
 
+static const uint8_t I2C_ADDR = 0x6B;
+static const uint8_t WHO_AM_I_ADDR = 0x0F;
+
 typedef struct {
   float x;
   float y;
