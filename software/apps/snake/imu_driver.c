@@ -18,8 +18,11 @@ void init_imu(const nrf_twi_mngr_t* i2c) {
 
   nrf_twi_mngr_init(i2c, &i2c_config);
 
+// Configure accelerometer at 104Hz, normal mode
+  i2c_reg_write(I2C_ADDR, CTRL1_XL, 0x40);
+
   // Read WHO AM I register
-  uint8_t result = i2c_reg_read(0x6B, 0x0F);
+  uint8_t result = i2c_reg_read(I2C_ADDR, WHO_AM_I_ADDR);
   //should be Ox6C
   printf("Please be correct : %x\n", result);
   
@@ -42,45 +45,34 @@ uint8_t i2c_reg_read(uint8_t i2c_addr, uint8_t reg_addr){
 void i2c_reg_write(uint8_t i2c_addr, uint8_t reg_addr){
   uint8_t write_data[2] = { reg_addr, 0 }; 
   nrf_twi_mngr_transfer_t write_transfer[] = {
-    NRF_TWI_MNGR_WRITE(i2c_addr, &write_data, 2, NRF_TWI_MNGR_NO_STOP)
+    NRF_TWI_MNGR_WRITE(i2c_addr, &write_data, 2, 0)
   };
     
   nrf_twi_mngr_perform(i2c_manager, NULL, write_transfer, 1, NULL);
 }   
 
-imu_measurement_t read_tilt(uint8_t i2c_addr){
+imu_measurement_t read_tilt(){
   imu_measurement_t result = {0};
-  
+  //The value is expressed as a 16-bit word in two’s complement.
   // x axis measurements
-  int16_t x_axis_l = i2c_reg_read(i2c_addr, 46);
-  int16_t x_axis_h = i2c_reg_read(i2c_addr, 45);
+  uint8_t x1 = i2c_reg_read(I2C_ADDR, OUTX_L_A);
+  uint8_t x2 = i2c_reg_read(I2C_ADDR, OUTX_H_A);
+  int16_t final_x = (uint16_t)(x2 << 8) + x1;
 
-  x_axis_h = x_axis_h <<8;
-  int16_t concat_x = x_axis_h + x_axis_l;
-  float result_x = (float) ( concat_x >> 6 );
-  
-  // y axis measurements
-  int16_t y_axis_l = i2c_reg_read(i2c_addr, 48);
-  int16_t y_axis_h = i2c_reg_read(i2c_addr, 47);
+  uint8_t y1 = i2c_reg_read(I2C_ADDR, OUTY_L_A);
+  uint8_t y2 = i2c_reg_read(I2C_ADDR, OUTY_H_A);
+  int16_t final_y = (uint16_t)(y2 << 8) + y1;
 
-  y_axis_h = y_axis_h <<8;
-  int16_t concat_y = y_axis_h + y_axis_l;
-  float result_y = (float) ( concat_y >> 6 );
-  
-  // z axis measurements
-  int16_t z_axis_l = i2c_reg_read(i2c_addr, 50);
-  int16_t z_axis_h = i2c_reg_read(i2c_addr, 49);
+  uint8_t z1 = i2c_reg_read(I2C_ADDR, OUTZ_L_A);
+  uint8_t z2 = i2c_reg_read(I2C_ADDR, OUTZ_H_A);
+  int16_t final_z = (uint16_t)(z2 << 8) + z1;
 
-  z_axis_h = z_axis_h <<8;
-  int16_t concat_z = z_axis_h + z_axis_l;
-  float result_z = (float) ( concat_z >> 6 );
-  
-  // do the conversion here
+
   
   // then return the results
-  result.x = result_x;
-  result.y = result_y;
-  result.z = result_z;
+  result.x = final_x;
+  result.y = final_y;
+  result.z = final_z;
   
   return result;
 }
