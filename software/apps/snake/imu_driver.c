@@ -70,14 +70,14 @@ uint8_t read_tilt(){
 */
   
   // then return the results
-  float x = (final_x * 0.061)/1000;
-  float y = (final_y * 0.061)/1000;
+  double x = (final_x * 0.061)/1000;
+  double y = (final_y * 0.061)/1000;
   //result.z = (final_z * 0.061)/1000;
   //
   uint8_t result = 0;
-  if(abs(x) >= abs(y)){
+  if(fabs(x) >= fabs(y)){
     //forward backward
-    if(abs(x) >= threshold){
+    if(fabs(x) >= threshold){
       if(x>0){
         //right
         result = 3;
@@ -93,7 +93,7 @@ uint8_t read_tilt(){
   }
   else{
     //left righ
-    if(abs(y) >= threshold){
+    if(fabs(y) >= threshold){
       if(y>0){
         //back
         result = 2;
