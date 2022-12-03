@@ -5,6 +5,8 @@
 #include "microbit_v2.h"
 
 static const nrf_twi_mngr_t* i2c_manager = NULL;
+uint8_t current_tilt = 0;
+// 0 = none, 1 = forward, 2 = backward, 3 = right, 4 = left
 
 void init_imu(const nrf_twi_mngr_t* i2c) {
   i2c_manager = i2c;
@@ -51,7 +53,7 @@ void i2c_reg_write(uint8_t i2c_addr, uint8_t reg_addr, uint8_t data){
   nrf_twi_mngr_perform(i2c_manager, NULL, write_transfer, 1, NULL);
 }   
 
-imu_measurement_t read_tilt(){
+uint8_t read_tilt(){
   imu_measurement_t result = {0};
   //The value is expressed as a 16-bit word in two’s complement.
   // x axis measurements
@@ -63,16 +65,54 @@ imu_measurement_t read_tilt(){
   uint8_t y2 = i2c_reg_read(I2C_ADDR, OUTY_H_A);
   int16_t final_y = (uint16_t)(y2 << 8) + y1;
 
-  uint8_t z1 = i2c_reg_read(I2C_ADDR, OUTZ_L_A);
+ /* uint8_t z1 = i2c_reg_read(I2C_ADDR, OUTZ_L_A);
   uint8_t z2 = i2c_reg_read(I2C_ADDR, OUTZ_H_A);
   int16_t final_z = (uint16_t)(z2 << 8) + z1;
 
-
+*/
   
   // then return the results
-  result.x = (final_x * 0.061)/1000;
-  result.y = (final_y * 0.061)/1000;
-  result.z = (final_z * 0.061)/1000;
+  float x = (final_x * 0.061)/1000;
+  float y = (final_y * 0.061)/1000;
+  //result.z = (final_z * 0.061)/1000;
   //
+  uint8_t result = 0;
+  if(abs(x) >= abs(y)){
+    //forward backward
+    if(abs(x) >= threshold){
+      if(x>0){
+        //right
+        result = 3;
+      }
+      else{
+        //left
+        result = 4;
+      }
+    }
+    else{
+      result = 0;
+    }
+  }
+  else{
+    //left righ
+    if(abs(y) >= threshold){
+      if(y>0){
+        //back
+        result = 2;
+      }
+      else{
+        //forward
+        result = 4;
+      }
+    }
+    else{
+      result = 0;
+    }
+  }
+  // avoid turning the same direction twice (not possible anyways)
+  if(if result!= 0 && current_tilt==result){
+    result = 0;
+  }
+  current_tilt = result;
   return result;
 }
