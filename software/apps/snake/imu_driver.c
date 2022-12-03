@@ -37,7 +37,7 @@ uint8_t i2c_reg_read(uint8_t i2c_addr, uint8_t reg_addr){
   };
   uint32_t res = nrf_twi_mngr_perform(i2c_manager, NULL, read_transfer, 2, NULL);
 
-  printf("Error code %d\n", res);
+  //printf("Error code %d\n", res);
 
   return rx_buf;
 }   
