@@ -45,11 +45,18 @@ int main(void) {
   // initialize small led display
   init_qwiic_led_driver(&twi_mngr_instance);
   
-  int i = 0;
+  int x = 0;
+  int y = 0;
+  int color = 1;
   // loop forever
+  
+  setPixel(50, 30, 1);
+  setPixel(50, 29, 1);
+  setPixel(51, 29, 1);
+  setPixel(51, 30, 1);
   while (1) {
     
-    nrf_delay_ms(2000);
+    nrf_delay_ms(50);
     /*grid[0] = i;
     i += 1;
     if(i == 3){ i= 0;}
@@ -57,11 +64,13 @@ int main(void) {
     printf("Maybe displaying");
     */
     
+    display();
+    
     
     //imu_measurement_t result = read_tilt();
     //printf("hello %f \t %f \t %f \n", result.x, result.y, result.z);
     //printf("Maybe displaying");
-    uint8_t result = read_tilt();
-    printf("direction: %u \n", result);
+    //uint8_t result = read_tilt();
+    //printf("direction: %u \n", result);
   }
 }
