@@ -48,23 +48,20 @@ int main(void) {
   int i = 0;
   // loop forever
   while (1) {
-    /*
+    
     nrf_delay_ms(2000);
-    grid[0] = i;
+    /*grid[0] = i;
     i += 1;
     if(i == 3){ i= 0;}
     display_array(grid);
-<<<<<<< HEAD
     printf("Maybe displaying");
     */
     
     
     //imu_measurement_t result = read_tilt();
     //printf("hello %f \t %f \t %f \n", result.x, result.y, result.z);
-=======
     //printf("Maybe displaying");
     uint8_t result = read_tilt();
     printf("direction: %u \n", result);
->>>>>>> 486ae5462c0198d402de2d10ce2862be5bd02f36
   }
 }
