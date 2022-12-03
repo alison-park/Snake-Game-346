@@ -5,7 +5,6 @@
 #include "microbit_v2.h"
 
 static const nrf_twi_mngr_t* i2c_manager = NULL;
-uint8_t current_tilt = 0;
 // 0 = none, 1 = forward, 2 = backward, 3 = right, 4 = left
 
 void init_imu(const nrf_twi_mngr_t* i2c) {
@@ -101,17 +100,12 @@ uint8_t read_tilt(){
       }
       else{
         //forward
-        result = 4;
+        result = 1;
       }
     }
     else{
       result = 0;
     }
   }
-  // avoid turning the same direction twice (not possible anyways)
-  if(result!= 0 && current_tilt==result){
-    result = 0;
-  }
-  current_tilt = result;
   return result;
 }
