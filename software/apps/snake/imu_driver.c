@@ -54,7 +54,6 @@ void i2c_reg_write(uint8_t i2c_addr, uint8_t reg_addr, uint8_t data){
 }   
 
 uint8_t read_tilt(){
-  imu_measurement_t result = {0};
   //The value is expressed as a 16-bit word in two’s complement.
   // x axis measurements
   uint8_t x1 = i2c_reg_read(I2C_ADDR, OUTX_L_A);
@@ -110,7 +109,7 @@ uint8_t read_tilt(){
     }
   }
   // avoid turning the same direction twice (not possible anyways)
-  if(if result!= 0 && current_tilt==result){
+  if(result!= 0 && current_tilt==result){
     result = 0;
   }
   current_tilt = result;
