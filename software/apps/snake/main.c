@@ -51,7 +51,7 @@ int main(void) {
     if(i == 3){ i= 0;}
     display_array(grid);
     //printf("Maybe displaying");
-    imu_measurement_t result = read_tilt();
-    printf("hello %f \t %f \t %f \n", result.x, result.y, result.z);
+    uint8_t result = read_tilt();
+    printf("direction: %u \n", result);
   }
 }
