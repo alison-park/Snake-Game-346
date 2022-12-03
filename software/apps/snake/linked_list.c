@@ -28,7 +28,9 @@ void list_insert(node_t* node) {
     else{
    	node_t* first = list_get_first();
     	node->next=first;
-    	linked_list=node;  
+    	linked_list=node;
+    	
+    	//printf("adding (%i, %i)\n", node->x, node->y);
     }
 }
 
