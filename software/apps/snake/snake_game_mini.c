@@ -12,7 +12,7 @@
 #include "microbit_v2.h"
 #include "nrf_twi_mngr.h"
 
-
+bool gameover = false;
 int i,j,height = 48, width = 64, score;
 int fruit[4][2] = {0};
 int dir[2] = {0, 0};
@@ -41,6 +41,10 @@ void update_grid(){
 }
 
 void draw(){
+  if(gameover){ 
+    //printf("Not gonna do anything\n");
+    return; 
+  }
   update_grid();
   for (i=0; i<width; i++){ //column, toggle to turn on column
     for (j=0; j<height; j++){ //row, toggle to turn on specific LED
@@ -59,19 +63,21 @@ void draw(){
 }
 
 void setup(){
+  gameover = false;
+
   node_t* threeNode = malloc(sizeof(node_t));
-  threeNode->x = 63;
-  threeNode->y = 47;
+  threeNode->x = 56;
+  threeNode->y = 34;
   list_insert(threeNode);
   
   node_t* twoNode = malloc(sizeof(node_t));
-  twoNode->x = 62;
-  twoNode->y = 47;
+  twoNode->x = 55;
+  twoNode->y = 34;
   list_insert(twoNode);
   
   node_t* oneNode = malloc(sizeof(node_t));
-  oneNode->x = 61;
-  oneNode->y = 47;
+  oneNode->x = 54;
+  oneNode->y = 34;
   list_insert(oneNode);
 
   
@@ -94,6 +100,7 @@ void setup(){
 
 void gameOver() {
   printf("LOSER LOL");
+  gameover= true;
 }
 
 int checkCollisions() {

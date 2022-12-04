@@ -10,6 +10,7 @@
 #include "nrf.h"
 #include "nrf_delay.h"
 #include "nrfx_pwm.h"
+#include "play_sound.h"
 
 #include "microbit_v2.h"
 
@@ -30,7 +31,7 @@ nrf_pwm_sequence_t pwm_sequence = {
 };
 
 
-static void pwm_init(void) {
+void sound_pwm_init(void) {
   // Initialize the PWM
   // SPEAKER_OUT is the output pin, mark the others as NRFX_PWM_PIN_NOT_USED
   // Set the clock to 500 kHz, count mode to Up, and load mode to Common
@@ -49,7 +50,7 @@ static void pwm_init(void) {
   
 }
 
-static void play_tone(uint16_t frequency) {
+void play_tone(uint16_t frequency) {
   // Stop the PWM (and wait until its finished)
   // TODO
      nrfx_pwm_stop(&PWM_INST, true);
@@ -59,18 +60,18 @@ static void play_tone(uint16_t frequency) {
      NRF_PWM0->COUNTERTOP = 500000/frequency;
   // Modify the sequence data to be a 25% duty cycle
   // TODO
-     sequence_data[0] =(500000/frequency);
+     sequence_data[0] =(500000/frequency)/2;
   // Start playback of the samples and loop indefinitely
   // TODO
      nrfx_pwm_simple_playback(&PWM_INST, &pwm_sequence, 10, NRFX_PWM_FLAG_STOP);
 }   
 
 
-static void sound(){
-  printf("Board started!\n");
+void sound(){
+  //printf("Board started!\n");
 
   // initialize PWM
-  pwm_init();
+  //sound_pwm_init();
 
   // Play the A4 tone for one second
   // TODO

@@ -47,6 +47,9 @@ int main(void) {
   
   // initialize small led display
   init_qwiic_led_driver(&twi_mngr_instance);
+  
+  // initialize sound
+  sound_pwm_init();
 
   // setup the game
   setup();
@@ -98,8 +101,8 @@ int main(void) {
     //imu_measurement_t result = read_tilt();
     //printf("hello %f \t %f \t %f \n", result.x, result.y, result.z);
     //printf("Maybe displaying");
-    uint8_t result = read_tilt();
-    printf("direction: %u \n", result);
+    //uint8_t result = read_tilt();
+    //printf("direction: %u \n", result);
     printf("playing\n");
     sound();
 
