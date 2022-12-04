@@ -70,16 +70,16 @@ void play_tone(uint16_t frequency) {
 void ascend(){
   printf("I'm being called");
   play_tone(440);
-  nrf_delay_ms(500);
+  nrf_delay_ms(250);
 
   play_tone(554);
-  nrf_delay_ms(500);
+  nrf_delay_ms(250);
 
   play_tone(659);
-  nrf_delay_ms(500);
+  nrf_delay_ms(250);
 
   play_tone(880);
-  nrf_delay_ms(500);
+  nrf_delay_ms(250);
 
   nrfx_pwm_stop(&PWM_INST, true);
 }
@@ -88,27 +88,30 @@ void ascend(){
 void descend(){
 
   play_tone(880);
-  nrf_delay_ms(500);
+  nrf_delay_ms(250);
   
   play_tone(659);
-  nrf_delay_ms(500);
+  nrf_delay_ms(250);
 
   play_tone(554);
-  nrf_delay_ms(500);
+  nrf_delay_ms(250);
 
   play_tone(440);
-  nrf_delay_ms(500);
+  nrf_delay_ms(250);
 
   nrfx_pwm_stop(&PWM_INST, true);
 }
 
 void chomp(){
 
-  play_tone(440);
-  nrf_delay_ms(750);
+  play_tone(1760);
+  nrf_delay_ms(150);
   
-  play_tone(880);
-  nrf_delay_ms(750);
+  play_tone(1567);
+  nrf_delay_ms(150);
+
+  play_tone(1396);
+  nrf_delay_ms(150);
 
   nrfx_pwm_stop(&PWM_INST, true);
 }
