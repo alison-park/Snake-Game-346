@@ -46,7 +46,7 @@ node_t* list_remove_last(){
   if (linked_list != NULL) {
     node_t* prev_node = linked_list;
     node_t* curr_node = linked_list->next;
-    while(curr_node != NULL){
+    while(curr_node->next != NULL){
       prev_node = curr_node;
       curr_node = curr_node->next;
     }

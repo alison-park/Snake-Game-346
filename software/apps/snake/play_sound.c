@@ -63,7 +63,7 @@ void play_tone(uint16_t frequency) {
      sequence_data[0] =(500000/frequency)/2;
   // Start playback of the samples and loop indefinitely
   // TODO
-     nrfx_pwm_simple_playback(&PWM_INST, &pwm_sequence, 10, NRFX_PWM_FLAG_STOP);
+     nrfx_pwm_simple_playback(&PWM_INST, &pwm_sequence, 10, NRFX_PWM_FLAG_LOOP);
 }   
 
 

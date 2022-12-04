@@ -33,7 +33,7 @@ int main(void) {
   nrf_gpio_pin_dir_set(LED_ONE, NRF_GPIO_PIN_DIR_OUTPUT);
   
   //initialize PWM
-  pwm_init();
+  //pwm_init();
 
   //display array
   /*
@@ -71,9 +71,9 @@ int main(void) {
   */
   
   while (1) {
-    /*
-    nrf_delay_ms(50);
     
+    //nrf_delay_ms(50);
+    /*
     setPixel(x, y, 0);
     printf("Clearing (%i, %i)\n", x, y);
     
@@ -103,8 +103,8 @@ int main(void) {
     //printf("Maybe displaying");
     //uint8_t result = read_tilt();
     //printf("direction: %u \n", result);
-    printf("playing\n");
-    sound();
+    //printf("playing\n");
+    //sound();
 
   }
 }

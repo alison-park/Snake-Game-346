@@ -106,6 +106,7 @@ void gameOver() {
 int checkCollisions() {
   node_t* head = list_get_first();
   node_t* curr = list_get_first();
+  curr = curr -> next;
 
   while (curr != NULL) {
     if (curr->x == head->x && curr->y == head->y){
@@ -155,6 +156,7 @@ void logic(){
   }
   else {
     // we hit a wall
+    printf("We hit a wall");
     gameOver();
   }
   
@@ -163,6 +165,7 @@ void logic(){
   }
   else {
     // we hit a wall
+    printf("We hit a wall");
     gameOver();
   }
 
@@ -180,14 +183,16 @@ void logic(){
   else {
   */
     // pop tail of snake
-    node_t* last = list_remove_last();
-    free(last);
+  node_t* last = list_remove_last();
+  printf("Removing (%i, %i)\n", last->x, last->y);
+  free(last);
   //}
   
   // check for collisions
   if(checkCollisions()) {
     // we hit ourselves
-    gameOver();
+    printf("We hit ourselves");
+    //gameOver();
   }
   
   
