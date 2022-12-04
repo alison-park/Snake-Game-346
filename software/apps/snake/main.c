@@ -10,7 +10,7 @@
 #include "qwiic_led_driver.h"
 #include "led_driver.h"
 #include "snake_game_mini.h"
-
+#include "play_sound.h"
 #include "app_timer.h"
 
 #define LED_ONE EDGE_P13
@@ -98,7 +98,10 @@ int main(void) {
     //imu_measurement_t result = read_tilt();
     //printf("hello %f \t %f \t %f \n", result.x, result.y, result.z);
     //printf("Maybe displaying");
-    //uint8_t result = read_tilt();
-    //printf("direction: %u \n", result);
+    uint8_t result = read_tilt();
+    printf("direction: %u \n", result);
+    printf("playing\n");
+    sound();
+
   }
 }
