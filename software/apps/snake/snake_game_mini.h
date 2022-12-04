@@ -9,3 +9,4 @@ void draw();
 void setup();
 int checkCollisions();
 void logic();
+void generateFruit();

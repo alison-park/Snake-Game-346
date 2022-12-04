@@ -3,6 +3,8 @@
 #include <stdlib.h>
 //#include <conio.h>
 #include <stdio.h>
+#include <time.h>
+
 #include <linked_list.h>
 
 #include "imu_driver.h"
@@ -17,6 +19,8 @@ int i,j,height = 48, width = 64, score;
 int fruit[4][2] = {0};
 int dir[2] = {0, 0};
 int grid[64][48] = {0};
+
+
 
 void update_grid(){
   logic();
@@ -51,7 +55,7 @@ void draw(){
       //set led to value of grid[width][height]
       if (grid[i][j] == 1 | grid[i][j] == 2){
       	setPixel(i, j, 1);
-      	printf("Setting(%i, %i)\n", i, j);
+      	//printf("Setting(%i, %i)\n", i, j);
       }
       else{
       	setPixel(i, j, 0);
@@ -69,7 +73,6 @@ void setup(){
   threeNode->x = 56;
   threeNode->y = 34;
   list_insert(threeNode);
-  
   node_t* twoNode = malloc(sizeof(node_t));
   twoNode->x = 55;
   twoNode->y = 34;
@@ -81,20 +84,10 @@ void setup(){
   list_insert(oneNode);
 
   
-  // generate fruit positions
-  fruit[0][0] = 30;
-  fruit[0][1] = 30;
-  fruit[1][0] = 31;
-  fruit[1][1] = 30;
-  fruit[2][0] = 31;
-  fruit[2][1] = 31;
-  fruit[3][0] = 30;
-  fruit[3][1] = 31;
+  srand(time(NULL)); 
   
-  grid[30][30] = 2;
-  grid[31][30] = 2;
-  grid[31][31] = 2;
-  grid[30][31] = 2;
+  // generate fruit positions
+  generateFruit();
   
 }
 
@@ -121,7 +114,54 @@ int checkCollisions() {
 
 // WE NEED TO DO THIS STILL
 void generateFruit() {
+  // set new coordinates for fruit
+  // re generate them until they don't interect with snake
+  bool collide = true;
+  int left;
+  int top;
+  
+  while (collide) {
+    left = rand() % 63;
+    top = rand() % 47;
+    
+    printf("Generating (%i, %i) \n", left, top);
+    
+    node_t* curr = list_get_first();
+    collide = false;
+    while( curr != NULL){
+      if((curr->x == left || curr->x == (left+1)) && (curr->y == top || curr->y == (top+1))){
+        collide = true;
+        break;
+      } 
+      curr = curr -> next;
+    }
+  }
+  
+  printf("I am done");
+  
+  fruit[0][0] = left;
+  fruit[0][1] = top;
+  
+  fruit[1][0] = left;
+  fruit[1][1] = top + 1;
+  
+  fruit[2][0] = left + 1;
+  fruit[2][1] = top;
+  
+  fruit[3][0] = left + 1;
+  fruit[3][1] = top + 1;
+  
+}
 
+bool eatFruit(){
+  node_t* first=list_get_first();
+  
+  //check each part of fruit
+  if ((first->x == fruit[0][0] || first->x == fruit[2][0]) && (first->y == fruit[0][1] || first->y == fruit[1][1])){
+    return true;
+  }
+  
+  return false;
 }
 
 void logic(){
@@ -158,6 +198,7 @@ void logic(){
     // we hit a wall
     printf("We hit a wall");
     gameOver();
+    return;
   }
   
   if ((first->y + dir[1]) >= 0 && (first->y + dir[1]) < height){
@@ -167,32 +208,31 @@ void logic(){
     // we hit a wall
     printf("We hit a wall");
     gameOver();
+    return;
   }
 
   list_insert(newNode);
 
-/*
   // check if we eat a fruit
-  if (newNode->x == fruitx && newNode->y == fruity){
+  if (eatFruit()){
     score += 1;
     // generate a new fruit
     generateFruit();
     // don't pop the tail
   }
-  
   else {
-  */
     // pop tail of snake
-  node_t* last = list_remove_last();
-  printf("Removing (%i, %i)\n", last->x, last->y);
-  free(last);
-  //}
+    node_t* last = list_remove_last();
+    printf("Removing (%i, %i)\n", last->x, last->y);
+    free(last);
+  }
   
   // check for collisions
   if(checkCollisions()) {
     // we hit ourselves
     printf("We hit ourselves");
     //gameOver();
+    return;
   }
   
   
