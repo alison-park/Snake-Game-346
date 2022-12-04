@@ -10,6 +10,7 @@
 #include "qwiic_led_driver.h"
 #include "led_driver.h"
 #include "snake_game.h"
+#include "play_sound.h"
 
 #define LED_ONE EDGE_P13
 #define LED_TWO EDGE_P14
@@ -63,5 +64,8 @@ int main(void) {
     //printf("Maybe displaying");
     uint8_t result = read_tilt();
     printf("direction: %u \n", result);
+    printf("playing\n");
+    sound();
+
   }
 }
