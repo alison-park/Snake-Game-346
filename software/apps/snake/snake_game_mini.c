@@ -13,15 +13,13 @@
 #include "nrf_twi_mngr.h"
 
 
-NRF_TWI_MNGR_DEF(twi_mngr_instance, 1, 0);
-
 int i,j,height = 48, width = 64, score;
 int fruit[4][2] = {0};
 int dir[2] = {0, 0};
 int grid[64][48] = {0};
 
 void update_grid(){
-  //logic();
+  logic();
   // clear board + update it based on linked list
   for(i=0; i< width; i++){
     for(j=0; j< height; j++){
@@ -47,12 +45,12 @@ void draw(){
   for (i=0; i<width; i++){ //column, toggle to turn on column
     for (j=0; j<height; j++){ //row, toggle to turn on specific LED
       //set led to value of grid[width][height]
-      if (grid[i][j] == 0){
-      	setPixel(i, j, 0);
+      if (grid[i][j] == 1 | grid[i][j] == 2){
+      	setPixel(i, j, 1);
+      	printf("Setting(%i, %i)\n", i, j);
       }
       else{
-      	setPixel(i, j, 1);
-      	//printf("Setting(%i, %i)\n", i, j);
+      	setPixel(i, j, 0);
       }
     }
   }
@@ -61,26 +59,19 @@ void draw(){
 }
 
 void setup(){
-  
-  // initialize imu
-  init_imu(&twi_mngr_instance);
-  
-  // initialize small led display
-  init_qwiic_led_driver(&twi_mngr_instance);
-
   node_t* threeNode = malloc(sizeof(node_t));
-  threeNode->x = 41;
-  threeNode->y = 41;
+  threeNode->x = 63;
+  threeNode->y = 47;
   list_insert(threeNode);
   
   node_t* twoNode = malloc(sizeof(node_t));
-  twoNode->x = 41;
-  twoNode->y = 42;
+  twoNode->x = 62;
+  twoNode->y = 47;
   list_insert(twoNode);
   
   node_t* oneNode = malloc(sizeof(node_t));
-  oneNode->x = 41;
-  oneNode->y = 43;
+  oneNode->x = 61;
+  oneNode->y = 47;
   list_insert(oneNode);
 
   

@@ -47,6 +47,8 @@ void data(uint8_t c);
 
 void command(uint8_t c);
 
+void clear();
+
 void display();
 
 void setPixel(uint8_t x, uint8_t y, uint8_t on);

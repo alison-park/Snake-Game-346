@@ -167,7 +167,7 @@ void setPixel(uint8_t x, uint8_t y, uint8_t on){
     screenmemory[x + (y/8) * LCDWIDTH] |= (1 << (y % 8));
   }
   else {
-    screenmemory[x+ (y/8)*LCDWIDTH] &= (0 << (y % 8));
+    screenmemory[x+ (y/8)*LCDWIDTH] &= ~(1 << (y % 8));
   }
 }
 /*
