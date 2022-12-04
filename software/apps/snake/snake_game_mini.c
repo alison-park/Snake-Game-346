@@ -6,15 +6,21 @@
 #include <time.h>
 
 #include <linked_list.h>
-
+#include "play_sound.h"
 #include "imu_driver.h"
 #include "qwiic_led_driver.h"
 
 
 #include "microbit_v2.h"
 #include "nrf_twi_mngr.h"
+#include "app_timer.h"
+#include "nrf_delay.h"
+
+// app timers for the sound
+APP_TIMER_DEF(start_sound);
 
 bool gameover = false;
+
 int i,j,height = 48, width = 64, score;
 int fruit[4][2] = {0};
 int dir[2] = {0, 0};
@@ -89,11 +95,15 @@ void setup(){
   // generate fruit positions
   generateFruit();
   
+  
+  // play the ascend sound
+  ascend();
 }
 
 void gameOver() {
   printf("LOSER LOL");
   gameover= true;
+  descend();
 }
 
 int checkCollisions() {
@@ -223,7 +233,7 @@ void logic(){
   else {
     // pop tail of snake
     node_t* last = list_remove_last();
-    printf("Removing (%i, %i)\n", last->x, last->y);
+    //printf("Removing (%i, %i)\n", last->x, last->y);
     free(last);
   }
   

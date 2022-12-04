@@ -58,7 +58,7 @@ int main(void) {
   app_timer_init();
   app_timer_create(&game_timer, APP_TIMER_MODE_REPEATED, draw);
   
-  app_timer_start(game_timer, 2500, NULL);
+  app_timer_start(game_timer, 1250, NULL);
   
   int x = 0;
   int y = 0;
@@ -69,6 +69,8 @@ int main(void) {
     }
   }
   */
+  
+  //soundcheck();
   
   while (1) {
     
