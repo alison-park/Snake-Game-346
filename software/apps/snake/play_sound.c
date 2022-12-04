@@ -105,13 +105,13 @@ void descend(){
 void chomp(){
 
   play_tone(1760);
-  nrf_delay_ms(150);
+  nrf_delay_ms(100);
   
   play_tone(1567);
-  nrf_delay_ms(150);
+  nrf_delay_ms(100);
 
   play_tone(1396);
-  nrf_delay_ms(150);
+  nrf_delay_ms(100);
 
   nrfx_pwm_stop(&PWM_INST, true);
 }

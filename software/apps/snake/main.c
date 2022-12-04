@@ -1,6 +1,8 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
 
 #include "nrf_delay.h"
 #include "microbit_v2.h"
@@ -23,11 +25,8 @@ APP_TIMER_DEF(game_timer);
 
 int main(void) {
   printf("Board started!\n");
-
-  // turn on any LEDs
-  // make a timer to do it
-  //  timer_init();
-
+  
+  srand(time(NULL));
   
   //send pwm to data in PIN of LED board
   nrf_gpio_pin_dir_set(LED_ONE, NRF_GPIO_PIN_DIR_OUTPUT);

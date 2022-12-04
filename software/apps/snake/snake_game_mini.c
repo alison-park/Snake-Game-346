@@ -1,7 +1,6 @@
 #include "snake_game_mini.h"
 
 #include <stdlib.h>
-//#include <conio.h>
 #include <stdio.h>
 #include <time.h>
 
@@ -90,8 +89,6 @@ void setup(){
   list_insert(oneNode);
 
   
-  srand(time(NULL)); 
-  
   // generate fruit positions
   generateFruit();
   
@@ -168,6 +165,7 @@ bool eatFruit(){
   
   //check each part of fruit
   if ((first->x == fruit[0][0] || first->x == fruit[2][0]) && (first->y == fruit[0][1] || first->y == fruit[1][1])){
+    chomp();
     return true;
   }
   
@@ -228,7 +226,15 @@ void logic(){
     score += 1;
     // generate a new fruit
     generateFruit();
-    // don't pop the tail
+    
+    // don't pop the tail and also add one in direction we're going
+    node_t* first=list_get_first();
+    node_t* newNode = malloc(sizeof(node_t));
+    
+    newNode->x = (first->x + dir[0]);
+    newNode->y = (first->y + dir[1]);
+    
+    list_insert(newNode);
   }
   else {
     // pop tail of snake
@@ -241,7 +247,7 @@ void logic(){
   if(checkCollisions()) {
     // we hit ourselves
     printf("We hit ourselves");
-    //gameOver();
+    gameOver();
     return;
   }
   
