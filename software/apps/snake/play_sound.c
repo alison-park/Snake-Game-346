@@ -67,30 +67,55 @@ void play_tone(uint16_t frequency) {
 }   
 
 
-void sound(){
-  //printf("Board started!\n");
-
-  // initialize PWM
-  //sound_pwm_init();
-
-  // Play the A4 tone for one second
-  // TODO
+void ascend(){
   play_tone(440);
-  nrf_delay_ms(1000);
+  nrf_delay_ms(500);
 
-  // Play the C#5 tone for one second
-  // TODO
   play_tone(554);
-nrf_delay_ms(1000);
-  // Play the E5 tone for one second
-  // TODO
+  nrf_delay_ms(500);
+
   play_tone(659);
-  nrf_delay_ms(1000);
-  // Play the A5 tone for one second
-  // TODO
+  nrf_delay_ms(500);
+
   play_tone(880);
-nrf_delay_ms(1000);
-// Stop all noises
-  // TODO
+  nrf_delay_ms(500);
+
   nrfx_pwm_stop(&PWM_INST, true);
+}
+
+
+void descend(){
+
+  play_tone(880);
+  nrf_delay_ms(500);
+  
+  play_tone(659);
+  nrf_delay_ms(500);
+
+  play_tone(554);
+  nrf_delay_ms(500);
+
+  play_tone(440);
+  nrf_delay_ms(500);
+
+  nrfx_pwm_stop(&PWM_INST, true);
+}
+
+void chomp(){
+
+  play_tone(440);
+  nrf_delay_ms(750);
+  
+  play_tone(880);
+  nrf_delay_ms(750);
+
+  nrfx_pwm_stop(&PWM_INST, true);
+}
+
+void soundcheck(){
+   ascend();
+   nrf_delay_ms(1000);
+   chomp();
+   nrf_delay_ms(1000);
+   descend();
 }
