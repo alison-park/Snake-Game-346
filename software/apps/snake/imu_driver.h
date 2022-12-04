@@ -1,6 +1,7 @@
 #pragma once
 
 #include <stddef.h>
+#include <math.h>
 #include "nrf_twi_mngr.h"
 
 static const uint8_t I2C_ADDR = 0x6B;
@@ -12,7 +13,7 @@ static const uint8_t OUTZ_L_A = 0x2C;
 static const uint8_t OUTX_H_A = 0x29;
 static const uint8_t OUTY_H_A = 0x2B;
 static const uint8_t OUTZ_H_A = 0x2D;
-static const float threshold = 0.25;
+static const double threshold = 0.20;
 
 typedef struct {
   float x;
