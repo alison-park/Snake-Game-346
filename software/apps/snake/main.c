@@ -14,6 +14,7 @@
 #include "snake_game_mini.h"
 #include "play_sound.h"
 #include "app_timer.h"
+#include "gpio.h"
 
 #define LED_ONE EDGE_P13
 #define LED_TWO EDGE_P14
@@ -26,10 +27,13 @@ APP_TIMER_DEF(game_timer);
 int main(void) {
   printf("Board started!\n");
   
-  srand(time(NULL));
-  
   //send pwm to data in PIN of LED board
   nrf_gpio_pin_dir_set(LED_ONE, NRF_GPIO_PIN_DIR_OUTPUT);
+  
+  // initialize the buttons
+  
+  gpio_config(14,0);
+  gpio_config(23,0);
   
   //initialize PWM
   //pwm_init();
@@ -51,13 +55,11 @@ int main(void) {
   sound_pwm_init();
 
   // setup the game
-  setup();
+  //setup();
   
   // initialize app timer
   app_timer_init();
   app_timer_create(&game_timer, APP_TIMER_MODE_REPEATED, draw);
-  
-  app_timer_start(game_timer, 1250, NULL);
   
   int x = 0;
   int y = 0;
@@ -72,23 +74,21 @@ int main(void) {
   //soundcheck();
   
   while (1) {
-    
-    //nrf_delay_ms(50);
-    /*
-    setPixel(x, y, 0);
-    printf("Clearing (%i, %i)\n", x, y);
-    
-    display();
-    y+= 1;
-    
-    if (y >= 48){
-    	x += 1;
-    	y = 0;
+  	
+  //setup the game upon button A pressed
+  //Button A is P0.14 and active low
+  //Button B is P0.23 and active low
+  
+    if(!gpio_read(23)){
+      printf("Button B was pressed\n");
+      
+      setup(game_timer);
+  
+      app_timer_start(game_timer, 1250, NULL);
     }
-    if(x >= 64){
-    	x = 0;
+    if(!gpio_read(14)){
+      printf("Button A was pressed\n");
     }
-    */
     
     
     
@@ -99,13 +99,6 @@ int main(void) {
     printf("Maybe displaying");
     */
     
-    //imu_measurement_t result = read_tilt();
-    //printf("hello %f \t %f \t %f \n", result.x, result.y, result.z);
-    //printf("Maybe displaying");
-    //uint8_t result = read_tilt();
-    //printf("direction: %u \n", result);
-    //printf("playing\n");
-    //sound();
 
   }
 }

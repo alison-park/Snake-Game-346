@@ -18,11 +18,13 @@
 // app timers for the sound
 APP_TIMER_DEF(start_sound);
 
+game_timer_id;
+
 bool gameover = false;
 
 int i,j,height = 48, width = 64, score;
 int fruit[4][2] = {0};
-int dir[2] = {0, 0};
+int dir[2] = {-1, 0};
 int grid[64][48] = {0};
 
 
@@ -51,7 +53,7 @@ void update_grid(){
 
 void draw(){
   if(gameover){ 
-    //printf("Not gonna do anything\n");
+    printf("Not gonna do anything\n");
     return; 
   }
   update_grid();
@@ -71,7 +73,12 @@ void draw(){
   display();
 }
 
-void setup(){
+void setup(app_timer_id_t timer_id){
+  game_timer_id = timer_id;
+  
+  srand(time(NULL));
+  reset_list();
+  
   gameover = false;
 
   node_t* threeNode = malloc(sizeof(node_t));
@@ -92,13 +99,12 @@ void setup(){
   // generate fruit positions
   generateFruit();
   
-  
   // play the ascend sound
   ascend();
 }
 
 void gameOver() {
-  printf("LOSER LOL");
+  app_timer_stop(game_timer_id);
   gameover= true;
   descend();
 }
@@ -144,7 +150,7 @@ void generateFruit() {
     }
   }
   
-  printf("I am done");
+  //printf("I am done");
   
   fruit[0][0] = left;
   fruit[0][1] = top;
@@ -175,6 +181,7 @@ bool eatFruit(){
 void logic(){
   // check if direction changes with sensor
   uint8_t direction = read_tilt();
+  //printf("New direction is %i\n", direction);
   if (direction == 1) {
     dir[0] = 0;
     dir[1] = 1;
@@ -189,10 +196,6 @@ void logic(){
   }
   else if (direction == 4) {
     dir[0] = -1;
-    dir[1] = 0;
-  }
-  else {
-    dir[0] = 0;
     dir[1] = 0;
   }
   

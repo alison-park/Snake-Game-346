@@ -20,6 +20,7 @@ typedef struct node_t {
     struct node_t* next;
 } node_t;
 
+void reset_list();
 
 // -- List functions
 // Insert a node at the front of the linked list

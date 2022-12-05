@@ -68,7 +68,8 @@ void play_tone(uint16_t frequency) {
 
 
 void ascend(){
-  printf("I'm being called");
+  nrfx_pwm_stop(&PWM_INST, true);
+  
   play_tone(440);
   nrf_delay_ms(250);
 
@@ -86,6 +87,7 @@ void ascend(){
 
 
 void descend(){
+  nrfx_pwm_stop(&PWM_INST, true);
 
   play_tone(880);
   nrf_delay_ms(250);
@@ -103,6 +105,7 @@ void descend(){
 }
 
 void chomp(){
+  nrfx_pwm_stop(&PWM_INST, true);
 
   play_tone(1760);
   nrf_delay_ms(100);
