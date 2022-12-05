@@ -52,11 +52,11 @@ void update_grid(){
 }
 
 void draw(){
+  update_grid();
   if(gameover){ 
     printf("Not gonna do anything\n");
     return; 
   }
-  update_grid();
   for (i=0; i<width; i++){ //column, toggle to turn on column
     for (j=0; j<height; j++){ //row, toggle to turn on specific LED
       //set led to value of grid[width][height]
@@ -79,6 +79,9 @@ void setup(app_timer_id_t timer_id){
   srand(time(NULL));
   reset_list();
   
+  dir[0] = -1;
+  dir[1] = 0;
+  
   gameover = false;
 
   node_t* threeNode = malloc(sizeof(node_t));
@@ -99,6 +102,11 @@ void setup(app_timer_id_t timer_id){
   // generate fruit positions
   generateFruit();
   
+  drawStart();
+  
+  
+  nrf_delay_ms(300);
+  
   // play the ascend sound
   ascend();
 }
@@ -106,6 +114,7 @@ void setup(app_timer_id_t timer_id){
 void gameOver() {
   app_timer_stop(game_timer_id);
   gameover= true;
+  drawEnd();
   descend();
 }
 

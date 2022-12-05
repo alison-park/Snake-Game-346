@@ -11,6 +11,8 @@
 
 static const nrf_twi_mngr_t* i2c_manager = NULL;
 
+uint8_t fontWidth, fontHeight, fontType, fontStartChar, fontTotalChar, cursorX, cursorY;
+
 void init_qwiic_led_driver(const nrf_twi_mngr_t* i2c) {
   i2c_manager = i2c;
   printf("%x\n", i2c);
@@ -170,43 +172,113 @@ void setPixel(uint8_t x, uint8_t y, uint8_t on){
     screenmemory[x+ (y/8)*LCDWIDTH] &= ~(1 << (y % 8));
   }
 }
-/*
-void MicroOLED::circleFill(uint8_t x0, uint8_t y0, uint8_t radius, uint8_t color, uint8_t mode) {
-	// TODO - - find a way to check for no overlapping of pixels so that XOR draw mode will work perfectly
-	int8_t f = 1 - radius;
-	int8_t ddF_x = 1;
-	int8_t ddF_y = -2 * radius;
-	int8_t x = 0;
-	int8_t y = radius;
 
-	// Temporary disable fill circle for XOR mode.
-	if (mode==XOR) return;
-
-	for (uint8_t i=y0-radius; i<=y0+radius; i++) {
-		pixel(x0, i, color, mode);
-	}
-
-	while (x<y) {
-		if (f >= 0) {
-			y--;
-			ddF_y += 2;
-			f += ddF_y;
-		}
-		x++;
-		ddF_x += 2;
-		f += ddF_x;
-
-		for (uint8_t i=y0-y; i<=y0+y; i++) {
-			pixel(x0+x, i, color, mode);
-			pixel(x0-x, i, color, mode);
-		}
-		for (uint8_t i=y0-x; i<=y0+x; i++) {
-			pixel(x0+y, i, color, mode);
-			pixel(x0-y, i, color, mode);
-		}
-	}
+void drawStart(){
+  uint8_t get_message[] = {
+  	0, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1,
+  	1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0,
+  	1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0,
+  	1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0,
+  	1, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0,
+  	1, 0, 1, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0,
+  	1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0,
+  	1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0,
+  	1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0,
+  };
+  
+  int end_height = 9;
+  int end_width = 17;
+  
+  int startx = 62;
+  int starty = 30;
+  
+  for(int i = 0; i< end_height; i++){
+    for(int j = 0; j< end_width; j++){
+    	uint8_t on = get_message[i*end_width + j];
+    	setPixel(startx - j, starty - i, on); 
+    }
+  }
+  
+  uint8_t ready_message[] = {
+  	1, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  	1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  	1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  	1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  	1, 1, 1, 1, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  	1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  	1, 0, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  	1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+  	1, 0, 0, 0, 1, 0, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0, 1, 0, 1, 1, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0, 1, 0, 0
+  };
+  
+  startx -= end_width + 6;
+  
+  end_height = 9;
+  end_width = 38;
+  
+  
+  for(int i = 0; i< end_height; i++){
+    for(int j = 0; j< end_width; j++){
+    	uint8_t on = ready_message[i*end_width + j];
+    	setPixel(startx - j, starty - i, on); 
+    }
+  }
+  
+  display();
 }
-*/
 
 
+void drawEnd(){
+  uint8_t lol_message[] = {
+  	1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0,
+  	1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0,
+  	1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 
+  	1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0,
+  	1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0,
+  	1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0,
+  	1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0,
+  	1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0,
+  	1, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 1, 1
+  };
+  
+  int end_height = 9;
+  int end_width = 17;
+  
+  int startx = 58;
+  int starty = 30;
+  
+  for(int i = 0; i< end_height; i++){
+    for(int j = 0; j< end_width; j++){
+    	uint8_t on = lol_message[i*end_width + j];
+    	setPixel(startx - j, starty - i, on); 
+    }
+  }
+  
+  uint8_t loser_message[] = {
+  	1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 1, 1, 0, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 0,
+  	1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1,
+  	1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1,
+  	1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1,
+  	1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, 0, 0, 1, 1, 1, 1, 0,
+  	1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0,
+  	1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0,
+  	1, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 1, 0, 0, 0, 1,
+  	1, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0, 0, 1, 1, 1, 0, 0, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0, 1
+  };
+  
+  startx -= end_width + 6;
+  
+  end_height = 9;
+  end_width = 28;
+  
+  
+  for(int i = 0; i< end_height; i++){
+    for(int j = 0; j< end_width; j++){
+    	uint8_t on = loser_message[i*end_width + j];
+    	setPixel(startx - j, starty - i, on); 
+    }
+  }
+  
+  display();
+}
 

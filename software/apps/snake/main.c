@@ -37,14 +37,21 @@ int main(void) {
   
   //initialize PWM
   //pwm_init();
+  
+  /*
+  nrf_delay_ms(2000);
 
   //display array
-  /*
-  int grid[32*8] = {0}; //all green
-  grid[0] = 1;
-  display_array(grid); //grab board grid from snake_game.c
-  */
   
+  int grid[32*8] = {0}; //all blank
+  
+  for(int i = 0; i<32*8; i++){
+    grid[i] = 2;
+  }
+  display_array(grid); //grab board grid from snake_game.c
+  printf("Color should be on");
+  */
+
   // initialize imu
   init_imu(&twi_mngr_instance);
   
@@ -70,15 +77,19 @@ int main(void) {
     }
   }
   */
+  //int i = 0;
   
   //soundcheck();
   
   while (1) {
+    //i += 1;
   	
   //setup the game upon button A pressed
   //Button A is P0.14 and active low
   //Button B is P0.23 and active low
   
+    nrf_delay_ms(100);
+    
     if(!gpio_read(23)){
       printf("Button B was pressed\n");
       
@@ -91,14 +102,13 @@ int main(void) {
     }
     
     
+    /*
+    grid[0] = i % 2;
+    grid[16] = i % 2;
+    //printf("Color %i\n", i%2);
     
-    /*grid[0] = i;
-    i += 1;
-    if(i == 3){ i= 0;}
     display_array(grid);
-    printf("Maybe displaying");
     */
     
-
   }
 }

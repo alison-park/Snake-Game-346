@@ -35,6 +35,7 @@ static const uint8_t LCDWIDTH = 64;
 static const uint8_t LCDHEIGHT = 48;
 
 
+
 void init_qwiic_led_driver(const nrf_twi_mngr_t* i2c);
 
 void i2c_reg_write_oled(uint8_t i2c_addr, uint8_t reg_addr, uint8_t data);
@@ -52,4 +53,12 @@ void clear();
 void display();
 
 void setPixel(uint8_t x, uint8_t y, uint8_t on);
+
+void write(uint8_t c);
+
+void  drawChar(uint8_t x, uint8_t y, uint8_t c);
+
+void drawEnd();
+
+void drawStart();
 
