@@ -38,7 +38,7 @@ void init_gesture(const nrf_twi_mngr_t* i2c){
     printf("Failure to connect!\n");
     return;
   }
-  printf("Gesture sensor connected\n");
+  //printf("Gesture sensor connected\n");
   
   // disable everything to start
   enableGesture(false);
@@ -213,7 +213,7 @@ color getColorData() {
   
   uint16_t b = (BH << 8) | BL;
   
-  printf("The color is %x, %x, %x\n", r, g, b);
+  //printf("The color is %x, %x, %x\n", r, g, b);
   
   color res_color = {
     .c = c,

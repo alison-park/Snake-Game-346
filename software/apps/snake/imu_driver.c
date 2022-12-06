@@ -5,11 +5,9 @@
 #include "microbit_v2.h"
 
 static const nrf_twi_mngr_t* i2c_manager = NULL;
-// 0 = none, 1 = forward, 2 = backward, 3 = right, 4 = left
 
 void init_imu(const nrf_twi_mngr_t* i2c) {
   i2c_manager = i2c;
-  //printf("%x\n", i2c);
   
   nrf_drv_twi_config_t i2c_config = NRF_DRV_TWI_DEFAULT_CONFIG;
   i2c_config.scl = EDGE_P19;
@@ -23,9 +21,7 @@ void init_imu(const nrf_twi_mngr_t* i2c) {
   i2c_reg_write(I2C_ADDR, CTRL1_XL, 0x40);
 
   // Read WHO AM I register
-  uint8_t result = i2c_reg_read(I2C_ADDR, WHO_AM_I_ADDR);
-  //should be Ox6C
-  printf("Please be correct : %x\n", result);
+  //uint8_t result = i2c_reg_read(I2C_ADDR, WHO_AM_I_ADDR);
   
  }
 
@@ -38,7 +34,6 @@ uint8_t i2c_reg_read(uint8_t i2c_addr, uint8_t reg_addr){
   };
   uint32_t res = nrf_twi_mngr_perform(i2c_manager, NULL, read_transfer, 2, NULL);
 
-  //printf("Error code %d\n", res);
 
   return rx_buf;
 }   
@@ -54,7 +49,7 @@ void i2c_reg_write(uint8_t i2c_addr, uint8_t reg_addr, uint8_t data){
 
 uint8_t read_tilt(){
   //The value is expressed as a 16-bit word in two’s complement.
-  // x axis measurements
+
   uint8_t x1 = i2c_reg_read(I2C_ADDR, OUTX_L_A);
   uint8_t x2 = i2c_reg_read(I2C_ADDR, OUTX_H_A);
   int16_t final_x = (uint16_t)(x2 << 8) + x1;
@@ -63,27 +58,19 @@ uint8_t read_tilt(){
   uint8_t y2 = i2c_reg_read(I2C_ADDR, OUTY_H_A);
   int16_t final_y = (uint16_t)(y2 << 8) + y1;
 
- /* uint8_t z1 = i2c_reg_read(I2C_ADDR, OUTZ_L_A);
-  uint8_t z2 = i2c_reg_read(I2C_ADDR, OUTZ_H_A);
-  int16_t final_z = (uint16_t)(z2 << 8) + z1;
 
-*/
-  
   // then return the results
   double x = (final_x * 0.061)/1000;
   double y = (final_y * 0.061)/1000;
-  //result.z = (final_z * 0.061)/1000;
-  //
+ 
   uint8_t result = 0;
+  // 0 = none, 1 = forward, 2 = backward, 3 = right, 4 = left
   if(fabs(x) >= fabs(y)){
-    //forward backward
     if(fabs(x) >= threshold){
       if(x>0){
-        //right
         result = 3;
       }
       else{
-        //left
         result = 4;
       }
     }
@@ -92,14 +79,11 @@ uint8_t read_tilt(){
     }
   }
   else{
-    //left righ
     if(fabs(y) >= threshold){
       if(y>0){
-        //back
         result = 2;
       }
       else{
-        //forward
         result = 1;
       }
     }

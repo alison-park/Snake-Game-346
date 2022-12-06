@@ -53,7 +53,7 @@ int main(void) {
     nrf_delay_ms(1000);
     
     if(!gpio_read(23)){
-      printf("Button B was pressed\n");
+      //printf("Button B was pressed\n");
       
       setup(game_timer);
   
@@ -61,7 +61,10 @@ int main(void) {
     }
     
     if(!gpio_read(14)){
-      printf("Button A was pressed\n");
+      //printf("Button A was pressed\n");
+      //disable gesture sensor
+     toggleInvertLock();
     }
+    
   }
 }

@@ -27,11 +27,7 @@ uint16_t sample_array[696] ={0}; //256*24+24*2 = 6184
 
 
 void pwm_init(void) {
-  // Initialize the PWM
-  // EDGE_P13 is the output pin, mark the others as NRFX_PWM_PIN_NOT_USED
-  // Set the clock to 500 kHz, count mode to Up, and load mode to Common
-  // The Countertop value doesn't matter for now. We'll set it in play_tone()
-  // TODO
+
   nrfx_pwm_config_t cnfg = {
 			    .output_pins = {EDGE_P13, NRFX_PWM_PIN_NOT_USED, NRFX_PWM_PIN_NOT_USED, NRFX_PWM_PIN_NOT_USED},
 			    .irq_priority = 1,
@@ -65,12 +61,7 @@ void display_array(int* arr) {
       }
     }
   }
-  //printf("%x\n", color_buffer[0]);
-
-  //printf("The non zero colors are:");
   
-  
-
   for (int ii=0; ii<num_leds; ii++){
     uint32_t curr_color = color_buffer[ii];
     for(int jj=0; jj<24; jj++){
@@ -105,11 +96,7 @@ void display_array(int* arr) {
     .end_delay = 0,
   };
 
-  // Start playback of the samples
-  // You will need to pass in a flag to loop the sound
-  // The playback count here is the number of times the entire buffer will repeat
-  //    (which doesn't matter if you set the loop flag)
-  // TODO
+
   nrfx_pwm_simple_playback(&PWM_INST, &pwm_sequence, 1, NRFX_PWM_FLAG_STOP);
 }
 

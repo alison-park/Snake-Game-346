@@ -21,10 +21,14 @@ int i,j,height = 48, width = 64, score;
 int fruit[4][2] = {0};
 int dir[2] = {-1, 0};
 int grid[64][48] = {0};
+bool gameover = false;
 
 uint32_t seed = 1;
 
 void setup(app_timer_id_t timer_id){
+  // reset game over
+  gameover = false;
+
   // record the timer id for later stopping
   game_timer_id = timer_id;
   
@@ -59,6 +63,7 @@ void setup(app_timer_id_t timer_id){
   
   // draw start screen
   resetColorMode();
+  clear();
   drawStart();
   
   // slight start pause
@@ -71,6 +76,8 @@ void setup(app_timer_id_t timer_id){
 void draw(){
   // update the board values
   update_grid();
+  
+  if (gameover){ return; }
   
   // check gesture sensor to see if darkness detected
   // if so invert the pixel display
@@ -153,7 +160,7 @@ void logic(){
   }
   else {
     // we hit a wall
-    gameOver();
+    gameOver(false);
     return;
   }
   
@@ -163,7 +170,7 @@ void logic(){
   }
   else {
     // we hit a wall
-    gameOver();
+    gameOver(false);
     return;
   }
 
@@ -195,7 +202,7 @@ void logic(){
   
   // check for collisions (see if we hit ourselves)
   if(checkCollisions()) {
-    gameOver();
+    gameOver(false);
     return;
   }
 }
@@ -229,7 +236,8 @@ void generateFruit() {
     // game is over
     tries += 1;
     if (collide && tries >= 100){
-      gameOver();
+      // if you beat our game you still lose
+      gameOver(true);
     }
   }
   
@@ -276,7 +284,8 @@ int checkCollisions() {
   return 0;
 }
 
-void gameOver() {
+void gameOver(bool good) {
+  gameover = true;
   // replace the seed (so fruit generation randomizes)
   seed = app_timer_cnt_get();
   
@@ -284,7 +293,12 @@ void gameOver() {
   app_timer_stop(game_timer_id);
   
   // draw the end screen
-  drawEnd();
+  if (good){
+    drawGoodEnd();
+  }
+  else {
+    drawEnd();
+  }
   
   // play the end sound
   descend();

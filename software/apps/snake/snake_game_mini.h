@@ -12,4 +12,4 @@ void logic();
 void generateFruit();
 bool eatFruit();
 int checkCollisions();
-void gameOver();
+void gameOver(bool good);

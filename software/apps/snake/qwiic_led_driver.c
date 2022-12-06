@@ -12,10 +12,11 @@
 static const nrf_twi_mngr_t* i2c_manager = NULL;
 
 uint8_t mode = 1;
+uint8_t lock = 0;
+
 
 void init_qwiic_led_driver(const nrf_twi_mngr_t* i2c) {
   i2c_manager = i2c;
-  printf("%x\n", i2c);
   
   nrf_drv_twi_config_t i2c_config = NRF_DRV_TWI_DEFAULT_CONFIG;
   i2c_config.scl = EDGE_P19;
@@ -25,7 +26,6 @@ void init_qwiic_led_driver(const nrf_twi_mngr_t* i2c) {
 
   nrf_twi_mngr_init(i2c, &i2c_config);
   
-  printf("init");
   
   // to initiate communication pull
 
@@ -87,9 +87,8 @@ void i2c_reg_write_oled(uint8_t i2c_addr, uint8_t reg_addr, uint8_t data){
     NRF_TWI_MNGR_WRITE(i2c_addr, &write_data, 2, 0)
   };
     
-  uint8_t error = nrf_twi_mngr_perform(i2c_manager, NULL, write_transfer, 1, NULL);
+  nrf_twi_mngr_perform(i2c_manager, NULL, write_transfer, 1, NULL);
   
-  //printf("Error %d\n", error);
 }   
 
 
@@ -168,9 +167,16 @@ void resetColorMode(){
   mode = 1;
 }
 
+void toggleInvertLock(){
+  if (lock == 1){ lock = 0; }
+  else { lock = 1; }
+}
+
 void invertColors(){
+ if(lock == 0){
   if (mode == 1){ mode = 0; }
   else { mode = 1; }
+  }
 }
 
 void setPixel(uint8_t x, uint8_t y, uint8_t on){
@@ -294,6 +300,35 @@ void drawEnd(){
   for(int i = 0; i< end_height; i++){
     for(int j = 0; j< end_width; j++){
     	uint8_t on = loser_message[i*end_width + j];
+    	setPixel(startx - j, starty - i, on); 
+    }
+  }
+  
+  display();
+}
+
+void drawGoodEnd(){
+  uint8_t yay_message[] = {
+  	1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1,
+  	1, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 1,
+  	1, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 1,
+  	0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0,
+  	0, 0, 1, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 1, 0, 0,
+  	0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0,
+  	0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0,
+  	0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0,
+  	0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0
+  };
+  
+  int end_height = 9;
+  int end_width = 17;
+  
+  int startx = 40;
+  int starty = 30;
+  
+  for(int i = 0; i< end_height; i++){
+    for(int j = 0; j< end_width; j++){
+    	uint8_t on = yay_message[i*end_width + j];
     	setPixel(startx - j, starty - i, on); 
     }
   }

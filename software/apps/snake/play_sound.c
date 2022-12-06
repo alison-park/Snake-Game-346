@@ -31,12 +31,8 @@ nrf_pwm_sequence_t pwm_sequence = {
 };
 
 
-void sound_pwm_init(void) {
-  // Initialize the PWM
-  // SPEAKER_OUT is the output pin, mark the others as NRFX_PWM_PIN_NOT_USED
-  // Set the clock to 500 kHz, count mode to Up, and load mode to Common
-  // The Countertop value doesn't matter for now. We'll set it in play_tone()
-  // TODO
+void sound_pwm_init(void) { 
+
   nrfx_pwm_config_t config = {
    .output_pins = {SPEAKER_OUT, NRFX_PWM_PIN_NOT_USED, NRFX_PWM_PIN_NOT_USED, NRFX_PWM_PIN_NOT_USED},
   .irq_priority = 1,
@@ -51,18 +47,13 @@ void sound_pwm_init(void) {
 }
 
 void play_tone(uint16_t frequency) {
-  // Stop the PWM (and wait until its finished)
-  // TODO
+  
      nrfx_pwm_stop(&PWM_INST, true);
-  // Set a countertop value based on desired tone frequency
-  // You can access it as NRF_PWM0->COUNTERTOP
-  // TODO
+
      NRF_PWM0->COUNTERTOP = 500000/frequency;
-  // Modify the sequence data to be a 25% duty cycle
-  // TODO
+     
      sequence_data[0] =(500000/frequency)/2;
-  // Start playback of the samples and loop indefinitely
-  // TODO
+     
      nrfx_pwm_simple_playback(&PWM_INST, &pwm_sequence, 10, NRFX_PWM_FLAG_LOOP);
 }   
 
