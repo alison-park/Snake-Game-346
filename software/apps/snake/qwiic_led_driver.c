@@ -11,7 +11,7 @@
 
 static const nrf_twi_mngr_t* i2c_manager = NULL;
 
-uint8_t fontWidth, fontHeight, fontType, fontStartChar, fontTotalChar, cursorX, cursorY;
+uint8_t mode = 1;
 
 void init_qwiic_led_driver(const nrf_twi_mngr_t* i2c) {
   i2c_manager = i2c;
@@ -164,12 +164,31 @@ void display(){
   }
 }
 
+void resetColorMode(){
+  mode = 1;
+}
+
+void invertColors(){
+  if (mode == 1){ mode = 0; }
+  else { mode = 1; }
+}
+
 void setPixel(uint8_t x, uint8_t y, uint8_t on){
-  if(on == 1){
-    screenmemory[x + (y/8) * LCDWIDTH] |= (1 << (y % 8));
+  if(mode){
+    if(on == 1){
+      screenmemory[x + (y/8) * LCDWIDTH] |= (1 << (y % 8));
+    }
+    else {
+      screenmemory[x+ (y/8)*LCDWIDTH] &= ~(1 << (y % 8));
+    }
   }
   else {
-    screenmemory[x+ (y/8)*LCDWIDTH] &= ~(1 << (y % 8));
+    if(on == 0){
+      screenmemory[x + (y/8) * LCDWIDTH] |= (1 << (y % 8));
+    }
+    else {
+      screenmemory[x+ (y/8)*LCDWIDTH] &= ~(1 << (y % 8));
+    }
   }
 }
 

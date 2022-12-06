@@ -52,6 +52,10 @@ void clear();
 
 void display();
 
+void resetColorMode();
+
+void invertColors();
+
 void setPixel(uint8_t x, uint8_t y, uint8_t on);
 
 void write(uint8_t c);

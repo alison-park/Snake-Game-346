@@ -8,7 +8,7 @@
 #include "play_sound.h"
 #include "imu_driver.h"
 #include "qwiic_led_driver.h"
-
+#include "gesture_driver.h"
 
 #include "microbit_v2.h"
 #include "nrf_twi_mngr.h"
@@ -27,7 +27,7 @@ int fruit[4][2] = {0};
 int dir[2] = {-1, 0};
 int grid[64][48] = {0};
 
-
+uint32_t seed = 0;
 
 void update_grid(){
   logic();
@@ -53,10 +53,13 @@ void update_grid(){
 
 void draw(){
   update_grid();
-  if(gameover){ 
-    printf("Not gonna do anything\n");
-    return; 
+  
+  color c = getColorData();
+  
+  if(c.r == 0 && c.g == 0 && c.b == 0){
+    invertColors();
   }
+  
   for (i=0; i<width; i++){ //column, toggle to turn on column
     for (j=0; j<height; j++){ //row, toggle to turn on specific LED
       //set led to value of grid[width][height]
@@ -76,7 +79,8 @@ void draw(){
 void setup(app_timer_id_t timer_id){
   game_timer_id = timer_id;
   
-  srand(time(NULL));
+  // seed the generator
+  srand(seed);
   reset_list();
   
   dir[0] = -1;
@@ -98,13 +102,14 @@ void setup(app_timer_id_t timer_id){
   oneNode->y = 34;
   list_insert(oneNode);
 
-  
   // generate fruit positions
   generateFruit();
   
+  // draw start screen
+  resetColorMode();
   drawStart();
   
-  
+  // slight start pause
   nrf_delay_ms(300);
   
   // play the ascend sound
@@ -112,6 +117,7 @@ void setup(app_timer_id_t timer_id){
 }
 
 void gameOver() {
+  seed = app_timer_cnt_get();
   app_timer_stop(game_timer_id);
   gameover= true;
   drawEnd();
