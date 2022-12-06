@@ -5,9 +5,11 @@
 #include "nrf.h"
 #include "app_timer.h"
 
-void update_grid();
-void draw();
 void setup(app_timer_id_t timer_id);
-int checkCollisions();
+void draw();
+void update_grid();
 void logic();
 void generateFruit();
+bool eatFruit();
+int checkCollisions();
+void gameOver();
