@@ -15,12 +15,6 @@ static const uint8_t OUTY_H_A = 0x2B;
 static const uint8_t OUTZ_H_A = 0x2D;
 static const double threshold = 0.20;
 
-typedef struct {
-  float x;
-  float y;
-  float z;
-} imu_measurement_t;
-
 void init_imu(const nrf_twi_mngr_t* i2c);
 
 uint8_t i2c_reg_read(uint8_t i2c_addr, uint8_t reg_addr);

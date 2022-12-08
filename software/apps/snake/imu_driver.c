@@ -27,7 +27,6 @@ void init_imu(const nrf_twi_mngr_t* i2c) {
 
 uint8_t i2c_reg_read(uint8_t i2c_addr, uint8_t reg_addr){
   uint8_t rx_buf = 0;
-  //printf("%x\n", i2c_manager);
   nrf_twi_mngr_transfer_t const read_transfer[] = {
     NRF_TWI_MNGR_WRITE(i2c_addr, &reg_addr, 1, NRF_TWI_MNGR_NO_STOP),
     NRF_TWI_MNGR_READ(i2c_addr, &rx_buf, 1, 0)
@@ -49,7 +48,7 @@ void i2c_reg_write(uint8_t i2c_addr, uint8_t reg_addr, uint8_t data){
 
 uint8_t read_tilt(){
   //The value is expressed as a 16-bit word in two’s complement.
-
+  //z axis is locked so we will not read it 
   uint8_t x1 = i2c_reg_read(I2C_ADDR, OUTX_L_A);
   uint8_t x2 = i2c_reg_read(I2C_ADDR, OUTX_H_A);
   int16_t final_x = (uint16_t)(x2 << 8) + x1;
@@ -58,12 +57,12 @@ uint8_t read_tilt(){
   uint8_t y2 = i2c_reg_read(I2C_ADDR, OUTY_H_A);
   int16_t final_y = (uint16_t)(y2 << 8) + y1;
 
-
-  // then return the results
+  // translate results
   double x = (final_x * 0.061)/1000;
   double y = (final_y * 0.061)/1000;
  
   uint8_t result = 0;
+  //greater input on x axis or y axis?
   // 0 = none, 1 = forward, 2 = backward, 3 = right, 4 = left
   if(fabs(x) >= fabs(y)){
     if(fabs(x) >= threshold){

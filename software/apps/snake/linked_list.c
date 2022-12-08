@@ -12,7 +12,6 @@
 
 #include "linked_list.h"
 
-// the linked list
 static node_t* linked_list = NULL;
 
 
@@ -33,7 +32,6 @@ void list_insert(node_t* node) {
     	node->next=first;
     	linked_list=node;
     	
-    	//printf("adding (%i, %i)\n", node->x, node->y);
     }
 }
 

@@ -119,7 +119,6 @@ void update_grid(){
   node_t* first=list_get_first();
   while(first!=NULL){
   
-    //printf("adding (%i, %i) as a snake \n", first->x, first->y);
     grid[first->x][first->y]=1;
     first=first->next;
   }
@@ -154,7 +153,7 @@ void logic(){
   node_t* first=list_get_first();
   node_t* newNode = malloc(sizeof(node_t));
   
-  // check head is still in bounds
+  // check head x position is still in bounds
   if ((first->x + dir[0]) >= 0 && (first->x + dir[0]) < width){
     newNode->x = first->x + dir[0];
   }
@@ -164,7 +163,7 @@ void logic(){
     return;
   }
   
-  // check head is still in bounds
+  // check head y position is still in bounds
   if ((first->y + dir[1]) >= 0 && (first->y + dir[1]) < height){
     newNode->y = first->y + dir[1];
   }

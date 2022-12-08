@@ -5,24 +5,15 @@
 
 #include "nrf.h"
 
-// -- List types
-
 // a node within a linked list
 typedef struct node_t {
-
-    // *** Additional timer fields ***
-
-    // add your own variables here
     int x;
     int y;
-    // pointer to next node in list. Do not change this field for a node or you
-    //  will break the list
     struct node_t* next;
 } node_t;
 
 void reset_list();
 
-// -- List functions
 // Insert a node at the front of the linked list
 void list_insert(node_t* node);
 
@@ -32,11 +23,8 @@ node_t* list_get_first();
 
 node_t* list_remove_last();
 
-
 // Remove the specified node from the linked list. Note that the memory for the
 //  node is NOT automatically freed.
 void list_remove(node_t* node);
 
-
-// Print the linked list for debugging.
 void list_print();

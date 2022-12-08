@@ -110,6 +110,7 @@ void chomp(){
   nrfx_pwm_stop(&PWM_INST, true);
 }
 
+//test for all sounds
 void soundcheck(){
    ascend();
    nrf_delay_ms(1000);
