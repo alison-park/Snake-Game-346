@@ -1,6 +1,5 @@
-// Linked list implementation for virtual timers
-//
-// The list is singly linked and always sorted by the `timer_value` field
+// Linked list implementation for snake nodes
+// The list is singly linked
 
 #include <stdbool.h>
 #include <stdint.h>
@@ -14,15 +13,13 @@
 
 static node_t* linked_list = NULL;
 
-
-// -- External functions
+// reset the entire list
 void reset_list() {
   linked_list = NULL;
 }
 
-// insert item into list sorted by `timer_value`
+// insert item into list (in order its added, not sorted)
 void list_insert(node_t* node) {
-
     // fault if given a NULL node
     if (node == NULL) {
         printf("\n***\nERROR: node passed into `list_insert` was NULL!!\n***\n");
@@ -31,16 +28,13 @@ void list_insert(node_t* node) {
    	node_t* first = list_get_first();
     	node->next=first;
     	linked_list=node;
-    	
     }
 }
-
 
 // return first element without removing
 node_t* list_get_first() {
     return linked_list;
 }
-
 
 // remove last node in list
 node_t* list_remove_last(){
