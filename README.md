@@ -1,9 +1,7 @@
-# Northwestern Micro:bit v2 Base
+Snake Game
+This repo holds the final project for FQ '22 Comp Eng 346: Microprocessor System Design, taught by Branden Ghena. Team Snake Shimmy was comprised of Katrina Baniak, Ali Levin, and Alison Park. The team wanted to replicate the notorious game Snake, but by also implementing a tilt sensor so that the player would have to physically move a board to move the snake, allowing for a much more interactive game experience. The nRF52x Microbit and multiple I2C QWIIC hardware systems (Sparkfun Micro OLED, Sparkfun 6DOF tilt sensor, and an Adafruit gesture sensor) were used. The Northwestern Micro:bit v2 Base, provided by our Professor, was also used. The provided starter code had applications and board initializations that connects to the build system provided by nrf52x-base. 
 
-Starter code for Northwestern course CE346 based on Micro:bit v2.
 
-This repository has applications and board initialization that connects to the
-build system provided by [nrf52x-base](https://github.com/lab11/nrf52x-base).
 
 
 ## Requirements
