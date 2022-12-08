@@ -11,5 +11,3 @@ static const int num_leds = 24;
 void pwm_init(void);
 
 void display_array(int* arr);
-
-void timer_init(void);
