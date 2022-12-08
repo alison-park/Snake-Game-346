@@ -25,6 +25,7 @@ bool gameover = false;
 
 uint32_t seed = 1;
 
+// setup the starting game states
 void setup(app_timer_id_t timer_id){
   // reset game over
   gameover = false;
@@ -73,6 +74,7 @@ void setup(app_timer_id_t timer_id){
   ascend();
 }
 
+// draw the board on the oled
 void draw(){
   // update the board values
   update_grid();
@@ -104,6 +106,7 @@ void draw(){
   display();
 }
 
+// update grid with fruit and snake coordinates
 void update_grid(){
   // update positions, check collisions
   logic();
@@ -129,6 +132,7 @@ void update_grid(){
   }
 }
 
+// update all of the game logic
 void logic(){
   // check if direction changes with sensor
   uint8_t direction = read_tilt();
@@ -206,6 +210,7 @@ void logic(){
   }
 }
 
+// generate a new fruit on the board (not overlapping with the snake)
 void generateFruit() {
   bool collide = true;
   int left;
@@ -254,6 +259,7 @@ void generateFruit() {
   fruit[3][1] = top + 1;
 }
 
+// check if the snake eats a fruit
 bool eatFruit(){
   node_t* first=list_get_first();
   
@@ -267,6 +273,7 @@ bool eatFruit(){
   return false;
 }
 
+// check if the snake collides with itself
 int checkCollisions() {
   node_t* head = list_get_first();
   node_t* curr = list_get_first();
@@ -283,6 +290,7 @@ int checkCollisions() {
   return 0;
 }
 
+// update game states to be game over
 void gameOver(bool good) {
   gameover = true;
   // replace the seed (so fruit generation randomizes)
