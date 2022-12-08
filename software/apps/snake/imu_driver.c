@@ -17,7 +17,6 @@ void init_imu(const nrf_twi_mngr_t* i2c) {
 
   nrf_twi_mngr_init(i2c, &i2c_config);
 
-// Configure accelerometer at 104Hz, normal mode
   i2c_reg_write(I2C_ADDR, CTRL1_XL, 0x40);
 
   // Read WHO AM I register
@@ -27,13 +26,11 @@ void init_imu(const nrf_twi_mngr_t* i2c) {
 
 uint8_t i2c_reg_read(uint8_t i2c_addr, uint8_t reg_addr){
   uint8_t rx_buf = 0;
-  //printf("%x\n", i2c_manager);
   nrf_twi_mngr_transfer_t const read_transfer[] = {
     NRF_TWI_MNGR_WRITE(i2c_addr, &reg_addr, 1, NRF_TWI_MNGR_NO_STOP),
     NRF_TWI_MNGR_READ(i2c_addr, &rx_buf, 1, 0)
   };
-  uint32_t res = nrf_twi_mngr_perform(i2c_manager, NULL, read_transfer, 2, NULL);
-
+  nrf_twi_mngr_perform(i2c_manager, NULL, read_transfer, 2, NULL);
 
   return rx_buf;
 }   
