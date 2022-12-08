@@ -11,7 +11,6 @@
 
 #include "linked_list.h"
 
-// the linked list
 static node_t* linked_list = NULL;
 
 // reset the entire list
